@@ -2,10 +2,21 @@
 \usepackage{lipsum}
 \usepackage{url}
 \usepackage{cite}
-\title{On the Development of Peer-to-Peer Decentralized Communication}
+
+\usepackage[margin=1in]{geometry}
+
+\usepackage{fontspec}
+\setmainfont{IBM Plex Serif Medium}
+\setmonofont{Cascadia Code PL}
+
+\frenchspacing
+
+\title{The Development of Peer-to-Peer Matrix}
 \author{Hilmar Gústafsson \texttt{<hgusta16@student.aau.dk>}}
-\date{\today}
+\date{\small\today} % TODO: Set the date when done writing
+
 \begin{document}
+\input{hyphenation.tex}
 \maketitle
 \begin{abstract}
     We consider the problem of creating a peer-to-peer solution for decentralized communication.
@@ -15,6 +26,7 @@
 \input{implementation.tex}
 \input{conclusion.tex}
 \input{discussion.tex}
+\onecolumn
 \bibliography{references}
 \bibliographystyle{plain}
 \end{document}
