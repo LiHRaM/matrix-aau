@@ -12,6 +12,15 @@ In order to use such a service, a user must acquire a client designed for this p
 This approach does not scale well in terms of battery or network traffic, as each application separately performs similar routine actions, such as checking for and sending messages.
 We refer to the challenges of communication silos as \textit{the silo problem}.
 
+\paragraph{Security}
+In the typical client-server architecture, the client is forced to operate with some level of trust.
+In the case of email, the original architecture required that both participants be online, but has now adapted such that some server just needs to receive it and be able to pass it on to the recipient when possible\cite{tomlinson2009first}.
+Platforms which follow this architecture for messaging therefore store the messages of all conversation participants.
+The storage format and security depends on the software run on the server, which receives, stores and passes the messages on.
+For closed-source vendors, it is intractable to know whether the messages passed are done so securely, or whether third parties can access the data.
+Users are therefore forced to either rely on the word of the service providers, or use an alternative.
+In the cases of WhatsApp and Facebook Messenger, several such features are boasted, but regardless unverifiable, as per \cite{twitter_comms_protocol_comparison}.
+
 \paragraph{Matrix}
 The Matrix open standard\cite{matrix_org_spec} is a specification for a network similar in structure to email.
 It supports more recent features, such as live messaging, calls, and video conferencing.
