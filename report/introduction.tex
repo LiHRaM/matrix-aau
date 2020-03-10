@@ -1,35 +1,34 @@
 \section{Introduction}
-Internet communication is an immensely popular activity.
-Recently, WhatsApp announced that they have 2 billion users\cite{whatsapp_2b_users_archive_org}.
-Similarly, Facebook Messenger has announced having 1.3 billion users\cite{messenger_1pt3b_users}.
-Both of these platforms require all participants in a conversation to have copies of the same software, i.e.~WhatsApp or Facebook Messenger, respectively.
-Consider \cite{twitter_comms_protocol_comparison}, a comparison of different communication protocols by Lance R. Vick in terms of security, privacy, compatibility and features.
-\paragraph{Security}
-Many of the features of the two mentioned examples cannot be verified, as they are propietary, closed-source software.
-It is hard to verify the security of closed protocols, and to know what the owners of these proprietary applications do with the data of their users.
-Having only one implementation means that all users are equally vulnerable to implementation-specific exploits.
-\paragraph{Privacy}
-Protocols which aren't decentralized force the users to trust the server on which the messages are stored.
-Even if the software is open source, there is no guarantee that it is the same software being run on the server without each user having read access to the server.
-\paragraph{Compatibility}
-Contrast this with the Simple Mail Transfer Protocol\cite{RFC5321}, which does not require the sender and the receiver to use the same software, but simply to implement the same standard.
-The former approach requires users to sign up for a service in order to communicate with others within that service, whereas the latter is naturally interoperable.
-We refer to this lack of interoperability as \textit{the silo problem}.
+In 1971, the first email was sent\cite{tomlinson2009first}.
+Email is currently implemented using decentralized protocols for sending simple messages between recipients, specified for example in the SMTP RFC\cite{RFC5321}.
+One may register with an email provider, and write messages to any other provider implementing the same protocols, as long as they have the recipient's address, known as an email address.
+Mobile providers similarly allow people to contact others outside of their network.
+However, there's been a growing trend of \textit{communication silos}, where users may only contact other users of the same service.
+Examples of such services are WhatsApp, which has announced that its userbase has now exceeded two billion users\cite{whatsapp_2b_users_archive_org}, and Facebook Messenger, which similarly reported having 1.3 billion users\cite{messenger_1pt3b_users}.
 
-As recently as in 2019, it was reported that a private Israeli entity known as NSO Group has been targeting human-rights activists and journalists via WhatsApp\cite{nytimes_nso_group}.
-Jeff Bezos, the founder of Amazon, was also reported to be the victim of a similar exploit\cite{nytimes_bezos_hack}.
-The security of communication is important for many groups of people, whose livelihood or lives may depend on it.
-The journalists and human-rights activists might, for example, require anonymous communication to stay safe from hostile governments, or institutions.
-Take for example the Saudi Arabian government, which has been accused of assassinating journalists\cite{un_jamal_report}.
-It could also be in the interest of companies to have platforms for communication within the company, in order to reduce the chances of exploits infecting company hardware.
-For private citizens, the security and privacy of their conversations on the internet may be important to them for many reasons, and recent changes in law reflects the stance that governments take against corporations who may wish to violate the privacy of their users.
+\paragraph{Communication Silos}
+Although these services run over the internet, they are designed in isolation, and do not adhere to an external standard.
+In order to use such a service, a user must acquire a client designed for this private procotol.
+This approach does not scale well in terms of battery or network traffic, as each application separately performs similar routine actions, such as checking for and sending messages.
+We refer to the challenges of communication silos as \textit{the silo problem}.
+
+\paragraph{Matrix}
+The Matrix open standard\cite{matrix_org_spec} is a specification for a network similar in structure to email.
+It supports more recent features, such as live messaging, calls, and video conferencing.
+This standard is a potential solution to \textit{the silo problem}, and has several strong points.
+It is designed for interoperability.
+It has multiple clients\cite{matrix_org_clients} and SDKs\cite{matrix_org_sdks}.
+Through bridges, Matrix allows communicating with different protocols\cite{matrix_org_bridges}.
+The reference implementation of the Matrix open standard is Synapse\cite{matrix_org_synapse}, which is written mostly in Python.
 
 \subsection{Initial Problem Statement}\label{subsec:initial_problem_statement}
-One of the solutions for \textit{the silo problem} is to establish an open standard which can be implemented freely by individual parties.
-Given that this standard is implemented correctly, the different implementations are interoperable.
+We will explore the current use of the Matrix open standard and its current limitations.
+We might consider alternatives to current solutions, as well as novel solutions to open problems.
 
 We propose the following initial problem statement:
 \begin{itemize}
-    \item What are the properties of a good solution to \textit{the silo problem}?
-    \item How can the existing protocols in \cite{twitter_comms_protocol_comparison} be improved with regard to these properties?
+    \item How is the Matrix open standard currently being used?
+    \item What are the limitations of the standard?
+    \item What are the limitations of the reference implementation?
+    \item What are the necessary properties of solutions to these limitations?
 \end{itemize}
