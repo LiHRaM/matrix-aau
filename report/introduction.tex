@@ -3,14 +3,19 @@ Internet communication is an immensely popular activity.
 Recently, WhatsApp announced that they have 2 billion users\cite{whatsapp_2b_users_archive_org}.
 Similarly, Facebook Messenger has announced having 1.3 billion users\cite{messenger_1pt3b_users}.
 Both of these platforms require all participants in a conversation to have copies of the same software, i.e.~WhatsApp or Facebook Messenger, respectively.
-But how safe are these platforms?
-Consider for example \cite{twitter_comms_protocol_comparison}, a comparison of different communication protocols by Lance R. Vick.
+Consider \cite{twitter_comms_protocol_comparison}, a comparison of different communication protocols by Lance R. Vick in terms of security, privacy, compatibility and features.
+\paragraph{Security}
 Many of the features of the two mentioned examples cannot be verified, as they are propietary, closed-source software.
 It is hard to verify the security of closed protocols, and to know what the owners of these proprietary applications do with the data of their users.
 Having only one implementation means that all users are equally vulnerable to implementation-specific exploits.
+\paragraph{Privacy}
+Protocols which aren't decentralized force the users to trust the server on which the messages are stored.
+Even if the software is open source, there is no guarantee that it is the same software being run on the server without each user having read access to the server.
+\paragraph{Compatibility}
 Contrast this with the Simple Mail Transfer Protocol\cite{RFC5321}, which does not require the sender and the receiver to use the same software, but simply to implement the same standard.
 The former approach requires users to sign up for a service in order to communicate with others within that service, whereas the latter is naturally interoperable.
 We refer to this lack of interoperability as \textit{the silo problem}.
+
 As recently as in 2019, it was reported that a private Israeli entity known as NSO Group has been targeting human-rights activists and journalists via WhatsApp\cite{nytimes_nso_group}.
 Jeff Bezos, the founder of Amazon, was also reported to be the victim of a similar exploit\cite{nytimes_bezos_hack}.
 The security of communication is important for many groups of people, whose livelihood or lives may depend on it.
