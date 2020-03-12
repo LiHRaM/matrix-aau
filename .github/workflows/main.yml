@@ -17,3 +17,9 @@ jobs:
       uses: lihram/tectonic-nix@master
       with:
         master-doc: report/master.tex
+    
+    - name: Upload master.pdf
+      uses: actions/upload-artifact@v1
+      with:
+        name: report.pdf
+        path: report/master.pdf
