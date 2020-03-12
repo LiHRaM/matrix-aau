@@ -6,6 +6,7 @@ Mobile providers similarly allow people to contact others outside of their netwo
 However, there's been a growing trend of \textit{communication silos}, where users may only contact other users of the same service.
 Examples of such services are WhatsApp, which has announced that its userbase has now exceeded two billion users\cite{whatsapp_2b_users_archive_org}, and Facebook Messenger, which similarly reported having 1.3 billion users\cite{messenger_1pt3b_users}.
 
+\subsection{Motivation}
 \paragraph{Communication Silos}
 Although these services run over the internet, they are designed in isolation, and do not adhere to an external standard.
 In order to use such a service, a user must acquire a client designed for this private procotol.
@@ -21,6 +22,7 @@ For closed-source vendors, it is intractable to know whether the messages passed
 Users are therefore forced to either rely on the word of the service providers, or use an alternative.
 In the cases of WhatsApp and Facebook Messenger, several such features are boasted, but regardless not verified\cite{twitter_comms_protocol_comparison}.
 
+\subsection{Initial Problem Statement}\label{subsec:initial_problem_statement}
 \paragraph{Matrix}
 The Matrix open standard\cite{matrix_org_spec} is a specification for a network similar in structure to email.
 It supports more recent features, such as live messaging, calls, and video conferencing.
@@ -29,13 +31,17 @@ It is designed for interoperability.
 It has multiple clients\cite{matrix_org_clients} and SDKs\cite{matrix_org_sdks}.
 Through bridges, Matrix allows communicating with different protocols\cite{matrix_org_bridges}.
 The reference implementation of the Matrix open standard is Synapse\cite{matrix_org_synapse}, which is written mostly in Python.
+The Matrix team is also working on Dendrite\cite{matrix_org_dendrite}, an experimental server written in Golang, which is the base for peer-to-peer experiments.
 
-\subsection{Initial Problem Statement}\label{subsec:initial_problem_statement}
-We explore the current status of Matrix
+\paragraph{Dendrite and Peer-to-Peer Matrix}
+Matrix follows a client-server architecture, where servers federate messages and are responsible for passing them on.
+Peer discovery is done via DNS, which forces users to have a static IP address and a DNS entry for their homeserver.
+This is not practical for privacy-minded users who aren't technologically savvy.
+The Matrix team began experimenting with replacing the DNS peer discovery with a peer-to-peer equivalent, which would allow servers to run off of mobile devices such as laptops and phones, or even IoT devices.
+They successfully embedded Dendrite as a WASM blob into their web client, and are currently continuing work on this front.
 
 We propose the following initial problem statement:
 \begin{itemize}
-    \item What are the current priorities of the Matrix project?
-    \item What technical challenges does it face?
-    \item What are the properties 
+    \item How feasible is it to embed Dendrite into a mobile client?
+    \item How does peer-to-peer Matrix perform on mobile devices?
 \end{itemize}

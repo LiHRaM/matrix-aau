@@ -17,6 +17,7 @@ jobs:
       uses: lihram/tectonic-nix@master
       with:
         master-doc: report/master.tex
+        packages: [ cascadia-code, ibm-plex ]
     
     - name: Upload master.pdf
       uses: actions/upload-artifact@v1
