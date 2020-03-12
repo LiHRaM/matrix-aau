@@ -1,4 +1,6 @@
 # Aalborg University Project: Semester 8
+<img src=https://github.com/LiHRaM/p8-matrix-p2p/workflows/CI/badge.svg></img>
+
 I'm creating this project as a part of my graduate program at Aalborg University.
 The study regulation for the programme can be found [here](https://studieordninger.aau.dk/2020/23/1819).
 
