@@ -16,8 +16,8 @@ jobs:
     - name: LaTeX compilation
       uses: lihram/tectonic-nix@master
       with:
-        master-doc: report/master.tex
-        packages: "cascadia-code ipm-plex"
+        file: report/master.tex
+        packages: fontconfig cascadia-code ibm-plex
     
     - name: Upload master.pdf
       uses: actions/upload-artifact@v1
