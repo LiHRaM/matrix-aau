@@ -1,21 +1,20 @@
-\documentclass[11pt,twocolumn]{article}
+\documentclass[11pt]{report}
 \usepackage{lipsum}
 \usepackage{url}
 \usepackage{cite}
-
+\usepackage{acronym}
 \usepackage[margin=1in]{geometry}
-
 \usepackage{fontspec}
-\setmainfont{IBM Plex Serif Medium}
-\setmonofont{Cascadia Code PL}
+% \setmainfont{IBM Plex Serif Medium}
+% \setmonofont{Cascadia Code PL}
 
 \frenchspacing
 
 \title{The Development of Peer-to-Peer Matrix}
 \author{Hilmar Gústafsson \texttt{<hgusta16@student.aau.dk>}}
 \date{\small\today} % TODO: Set the date when done writing
-
 \begin{document}
+\input{glossaries.tex}
 \input{hyphenation.tex}
 \maketitle
 \begin{abstract}
@@ -26,7 +25,6 @@
 \input{implementation.tex}
 \input{discussion.tex}
 \input{conclusion.tex}
-\onecolumn
 \bibliography{references}
 \bibliographystyle{plain}
 \end{document}

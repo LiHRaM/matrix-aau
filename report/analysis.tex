@@ -1,36 +1,32 @@
-\section{Analysis}
-We explore the different questions posed in the initial problem statement in section \ref{subsec:initial_problem_statement}.
+\chapter{Analysis}
+We begin the analysis by examining the Matrix Open Standard.
 
-\paragraph{The Matrix Standard} The Matrix standard defines the behavior of a \textit{homeserver}, and a \textit{client}\cite{matrix_org_spec}.
+\section{The Matrix Standard}
+The Matrix Standard defines several \ac{API}s.
+Each of these \ac{API}s is expected to communicate with \ac{JSON} over \ac{REST}.
+To be more precise, the following \ac{API}s are defined:
+\begin{itemize}
+    \item \textbf{Client-Server}: A \textit{homeserver} interacting with a \textit{client}. In peer-to-peer Matrix, the \textit{client} and \textit{homeserver} are both on-device.
+    \item \textbf{Server-Server}: Two or more \textit{homeservers} interacting. The servers synchronize state via \textit{federation}.
+    \item \textbf{Application Service}: Interoperability and extensibility is largely achieved through application services, which can \textit{bridge} external chat protocols to Matrix, allowing e.g. interoperability between \ac{IRC} and Matrix.
+    \item \textbf{Identity Service}: Identity services enable external identities, such as email, mobile numbers, or other services to be attached to a Matrix user.
+    \item \textbf{Push Gateway}: The way push notifications are implemented for Matrix events.
+\end{itemize}
+
 Each homeserver needs to be registered with a DNS entry, by which they are currently identified.
 A user is registered under a homeserver, and identified thereby, e.g. \texttt{@user:homeserver.domain}.
-The specification is meant to change, i.e. it was not designed as final, and it has an established process for change.
+The specification is meant to change, i.e. it was not designed as final, and it has an established process for changes.
 This process is defined in \cite{matrix_org_spec_changes}.
 In order to account for a changing standard, a versioning system was established by the Matrix foundation.
 This standard is found in \cite{matrix_org_spec}, and establishes the foundation for interoperability between clients and chat rooms of varying versions.
 
-\subsection{Use of the Matrix Standard}
-Matrix.org provide a free homeserver, from which the foundation reported the following statistics\cite{fosdem_event_p2p_matrix}:
+\subsection{Dendrite}
+While Synapse is the reference implementation, progress on the peer-to-peer implementation is being made on Dendrite, the second-generation homeserver.
+Dendrite is written in Go, which typically compiles to native binaries.
+
+\subsection{RiotX}
+
+\section{Problem Statement}
 \begin{itemize}
-    \item \textasciitilde{}13.5 million users are visible from the Matrix.org homeserver.
-    \item \textasciitilde{}5 million messages are sent each day.
-    \item France, Germany and the US are reported to use Matrix, potentially also the UK.
-    \item \textasciitilde{}100 companies reported using Matrix.
-\end{itemize}
-
-\subsection{Matrix Specification Limitations}
-We consider some of the limitations of the Matrix Specification.
-
-As described in Github issue \cite{github_matrix_170}, a fundamental limitation of the client-server architecture is that users require a separate homeserver, with a static IP address and a DNS entry.
-To clarify, homeservers do not support changing domain names, as it is an essential part of their identity.
-Not all users have the hardware or resources to host their own server, and the specification currently does not support peer-to-peer communication.
-
-\subsection{Matrix Reference Implementation Limitations}
-\subsection{Properties of Solutions}
-
-\subsection{Problem Statement}
-\begin{itemize}
-    \item Which technical challenges must be overcome in order to implement peer-to-peer Matrix?
-    \item 
-    \item How could one implement such a solution?
+    \item TODO
 \end{itemize}
