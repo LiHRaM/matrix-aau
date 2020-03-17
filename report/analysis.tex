@@ -20,10 +20,40 @@ This process is defined in \cite{matrix_org_spec_changes}.
 In order to account for a changing standard, a versioning system was established by the Matrix foundation.
 This standard is found in \cite{matrix_org_spec}, and establishes the foundation for interoperability between clients and chat rooms of varying versions.
 
-\subsection{Dendrite}
-While Synapse is the reference implementation, progress on the peer-to-peer implementation is being made on Dendrite, the second-generation homeserver.
-Dendrite is written in Go, which typically compiles to native binaries.
+\subsection{Client-Server}
+The \textit{homeserver} is essentially a database with an \ac{API} which can be accessed by the client via \ac{HTTP} \ac{API} calls.
+The client \ac{API} provides commands for sending messages, controlling rooms and synchronizing conversation history.
+Clients may use both \ac{HTTP} and \ac{HTTPS}.
 
+\subsection{Server-Server}
+Due to the decentralized nature of the Matrix network, the server-server \ac{API} provides commands for synchronizing message history by pushing and retrieving messages, and sharing user information.
+Servers communicate in three main ways:
+\begin{itemize}
+    \item \ac{PDU}s: Broadcast events which are historically important and shall be stored.
+    \item \ac{EDU}s: 1 to 1 events which aren't historically important, don't need to be stored, and don't require a response.
+    \item Queries: Requests for information and the corresponding response.
+\end{itemize}
+Servers have a strong requirement of using \ac{HTTPS}.
+
+\subsection{Application Service}
+Homeservers are extended via Application Service \ac{API}s, which are privileged plugins.
+These plugins are meant to work on any \textit{homeserver} which correctly implements the Matrix standard.
+Application Services observe events from homeservers, and can broadcast events into rooms in which they participate.
+Homeservers are responsible for passing events to Application Services, which they can be configured to do via configuration files.
+
+\subsection{Identity Service}
+This \ac{API} establishes a method for mapping third-party identifiers to matrix identifiers.
+This allows people to find Matrix users by alternative service identifiers, such as email or their telephone numbers, or accounts at different services.
+
+\subsection{Push Gateway}
+An API for pushing notifications to users when they arrive at the homeserver.
+
+\section{Homeservers}
+\subsection{Synapse}
+\subsection{Dendrite}
+
+\section{Mobile Clients}
+\subsection{Riot}
 \subsection{RiotX}
 
 \section{Problem Statement}
