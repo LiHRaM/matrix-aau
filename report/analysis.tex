@@ -2,8 +2,9 @@
 We begin the analysis by examining the Matrix Open Standard.
 
 \section{The Matrix Standard}
+An \ac{API} is a way in which programs can define how they communicate.
 The Matrix Standard defines several \ac{API}s.
-Each of these \ac{API}s is expected to communicate with \ac{JSON} over \ac{REST}.
+Each of these \ac{API}s is expected to communicate using \ac{JSON} over \ac{REST}.
 To be more precise, the following \ac{API}s are defined\cite{matrix_org_spec}:
 \begin{itemize}
     \item \textbf{Client-Server}: A \textit{homeserver} interacting with a \textit{client}. In peer-to-peer Matrix, the \textit{client} and \textit{homeserver} are both on-device.
@@ -13,12 +14,61 @@ To be more precise, the following \ac{API}s are defined\cite{matrix_org_spec}:
     \item \textbf{Push Gateway}: The way push notifications are implemented for Matrix events.
 \end{itemize}
 
-Each homeserver needs to be registered with a DNS entry, by which they are currently identified.
-A user is registered under a homeserver, and identified thereby, e.g. \texttt{@user:homeserver.domain}.
+Each homeserver needs to be registered with a \ac{DNS} entry, by which they are currently identified.
+
 The specification is meant to change, i.e. it was not designed as final, and it has an established process for changes.
 This process is defined in \cite{matrix_org_spec_changes}.
 In order to account for a changing standard, a versioning system was established by the Matrix foundation.
 This standard is found in \cite{matrix_org_spec}, and establishes the foundation for interoperability between clients and chat rooms of varying versions.
+
+\subsection{Standard Terminology}
+We explain the different entities as defined by the Matrix standard.
+
+\paragraph{User}
+A user is registered with a homeserver, and identified thereby, e.g. \texttt{@user:example.com}.
+The user participates in conversations via rooms.
+The user's chat history is managed by all homeservers with users which participate in these rooms.
+
+\paragraph{Device}
+A client application corresponds roughly to what is termed a device in the Matrix standard.
+There are some caveats, for example, the same client on different browsers will be considered different devices per browser.
+A smartphone with separate mobile applications will also be considered multiple devices per application.
+The access of devices can be revoked via the Matrix \ac{API}, and they are used for managing encryption keys.
+Clients register themselves as devices on the first login.
+
+\paragraph{Event}
+All state changes are represented by events.
+Each event has a \texttt{type} field, which follows the Java package naming convention to avoid conflicts.
+For example, a message event has the type \texttt{m.room.message}.
+The Matrix Standard reserves all types starting with "\texttt{m.}".
+Events typically happen in the context of a room.
+
+\paragraph{Event Graph}
+Because of network partitions, we cannot guarantee that all homeservers are connected to each other at all times.
+The specification specifies how events are structured, so that each homeserver may eventually become consistent with the others.
+The events are stored in a partially ordered \ac{DAG}.
+Events are assigned a monotonically increasing \texttt{depth} to ease comparison.
+
+\paragraph{Room}
+Rooms serve as the unit to which users can publish events.
+They are a flexible concept, but also a simple one.
+In order to send a direct message to another user, the user will have to create a room, invite the other user and publish a message to the room.
+Rooms allow an arbitrary amount of participants, and can be managed by users with the sufficient authority.
+Authority in rooms is represented by a power level, which is between 0 and 100.
+The default power level is 0.
+When users publish events to a room, only those with a sufficient power level receive the event.
+Rooms have a single identifier, which is written like so: \texttt{!id:example.com}, and can have several aliases, which are written: \texttt{\#alias:domain}.
+Although a room is identified by a domain, it is federated and therefore not hosted only on its original homeserver.
+Rooms all have a specific version, which specifies how they operate.
+When new features are implemented for rooms, they are made available by adding a new version.
+Rooms change versions via upgrades.
+
+\paragraph{Identity}
+The standard supports mappings of third party identities to Matrix identities.
+Examples of third party entities are email, social media accounts and phone numbers.
+
+\paragraph{Profiles}
+Users can store information in their profiles, such as images, display names, etc.
 
 \subsection{Client-Server}
 The \textit{homeserver} is essentially a database with an \ac{API} which can be accessed by the client via \ac{HTTP} \ac{API} calls.
@@ -29,11 +79,11 @@ Clients may use both \ac{HTTP} and \ac{HTTPS}.
 Due to the decentralized nature of the Matrix network, the server-server \ac{API} provides commands for synchronizing message history by pushing and retrieving messages, and sharing user information.
 Servers communicate in three main ways:
 \begin{itemize}
-    \item \ac{PDU}s: Broadcast events which are historically important and shall be stored.
-    \item \ac{EDU}s: 1 to 1 events which aren't historically important, don't need to be stored, and don't require a response.
+    \item \ac{PDU}: A broadcast event which is historically important and shall be stored.
+    \item \ac{EDU}: A 1-to-1 event which is not historically important, does not need to be stored, and does not require a response.
     \item Queries: Requests for information and the corresponding response.
 \end{itemize}
-Servers have a strong requirement of using \ac{HTTPS}.
+Servers must use \ac{HTTPS}.
 
 \subsection{Application Service}
 Homeservers are extended via Application Service \ac{API}s, which are privileged plugins.
@@ -42,16 +92,29 @@ Application Services observe events from homeservers, and can broadcast events i
 Homeservers are responsible for passing events to Application Services, which they can be configured to do via configuration files.
 
 \subsection{Identity Service}
-This \ac{API} establishes a method for mapping third-party identifiers to matrix identifiers.
+This \ac{API} establishes a method for mapping third-party identifiers to Matrix identifiers.
 This allows people to find Matrix users by alternative service identifiers, such as email or their telephone numbers, or accounts at different services.
 
 \subsection{Push Gateway}
-An API for pushing notifications to users when they arrive at the homeserver.
+The homeserver can forward events to the Push Gateway, which then passes this information to push notification services provided by Google and Apple.
+As of the writing of this report, this API is trivial, with only one defined request.
+It is also unnecessary for a homeserver to contact a service external to the device in order to provide a notification.
+Ideally, this notification could be displayed directly by the homeserver, or by calling a custom Push Gateway which avoids the extra round trip.
 
+\subsection{Peer-to-Peer Implications}
+TODO: 
+    Discuss the differences between the peer-to-peer implementation in Dendrite and the standard, and why they are necessary.
+    This includes describing the Yggdrasil P2P network.
 
 \section{Homeservers}
+The Matrix organization has two official clients, Synapse\cite{matrix_org_synapse} and Dendrite\cite{matrix_org_dendrite}.
+
 \subsection{Synapse}
+TODO:
+    Describe Synapse, show snippets of salient parts (as this is the reference implementation, and might clarify some ambiguities in the standard).
 \subsection{Dendrite}
+TODO:
+    Describe Dendrite, discuss the standard implementation and how it's different with p2p.
 
 \section{Mobile Clients}
 \subsection{Riot}
