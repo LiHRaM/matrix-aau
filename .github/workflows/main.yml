@@ -17,7 +17,6 @@ jobs:
       uses: lihram/tectonic-nix@v1.0-alpha
       with:
         file: report/master.tex
-        packages: fontconfig cascadia-code ibm-plex
     
     - name: Upload master.pdf
       uses: actions/upload-artifact@v1
