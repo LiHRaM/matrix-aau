@@ -4,7 +4,7 @@ We begin the analysis by examining the Matrix Open Standard.
 \section{The Matrix Standard}
 The Matrix Standard defines several \ac{API}s.
 Each of these \ac{API}s is expected to communicate with \ac{JSON} over \ac{REST}.
-To be more precise, the following \ac{API}s are defined:
+To be more precise, the following \ac{API}s are defined\cite{matrix_org_spec}:
 \begin{itemize}
     \item \textbf{Client-Server}: A \textit{homeserver} interacting with a \textit{client}. In peer-to-peer Matrix, the \textit{client} and \textit{homeserver} are both on-device.
     \item \textbf{Server-Server}: Two or more \textit{homeservers} interacting. The servers synchronize state via \textit{federation}.
@@ -48,6 +48,7 @@ This allows people to find Matrix users by alternative service identifiers, such
 \subsection{Push Gateway}
 An API for pushing notifications to users when they arrive at the homeserver.
 
+
 \section{Homeservers}
 \subsection{Synapse}
 \subsection{Dendrite}
@@ -56,7 +57,12 @@ An API for pushing notifications to users when they arrive at the homeserver.
 \subsection{Riot}
 \subsection{RiotX}
 
-\section{Problem Statement}
-\begin{itemize}
-    \item TODO
-\end{itemize}
+% \section{Problem Statement}
+% \subsection{Requirements for Mobile}
+% The Application Service, Identity Service and Push Gateway \ac{API}s are not strictly necessary for a minimal version of peer-to-peer Matrix.
+% The core functionality is provided by the client-server and server-server \ac{API}s.
+% There are pre-existing implementations of both homeservers and clients which could be combined in order to provide such a service.
+
+% \begin{itemize}
+%     \item 
+% \end{itemize}
