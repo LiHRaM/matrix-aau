@@ -4,9 +4,9 @@
 \usepackage{cite}
 \usepackage{acronym}
 \usepackage[margin=1in]{geometry}
-\usepackage{fontspec}
-% \setmainfont{IBM Plex Serif Medium}
-% \setmonofont{Cascadia Code PL}
+\usepackage{plex-serif}
+\usepackage{FiraMono}
+
 
 \frenchspacing
 
@@ -14,7 +14,6 @@
 \author{Hilmar Gústafsson \texttt{<hgusta16@student.aau.dk>}}
 \date{\small\today} % TODO: Set the date when done writing
 \begin{document}
-\input{glossaries.tex}
 \input{hyphenation.tex}
 \maketitle
 \begin{abstract}
@@ -25,6 +24,7 @@
 \input{implementation.tex}
 \input{discussion.tex}
 \input{conclusion.tex}
+\input{glossaries.tex}
 \bibliography{references}
 \bibliographystyle{plain}
 \end{document}
