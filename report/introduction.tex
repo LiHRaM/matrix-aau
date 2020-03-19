@@ -1,18 +1,20 @@
 \chapter{Introduction}
 In 1971, the first email was sent\cite{tomlinson2009first}.
-Email is currently implemented using decentralized protocols for sending simple messages between recipients, specified for example in the \ac{SMTP} \ac{RFC}\cite{RFC5321}.
+Email is implemented using decentralized protocols for sending simple messages between recipients, specified for example in the \ac{SMTP} \ac{RFC}\cite{RFC5321}.
 One may register with an email provider, and write messages to any other provider implementing the same protocols, as long as they have the recipient's address, known as an email address.
 Mobile providers similarly allow people to contact others outside of their network.
 This is an elegant, scalable and privacy-respecting architecture.
-However, there's been a growing trend of \textit{communication silos}, where users may only contact other users of the same service.
-Examples of such services are WhatsApp, which has announced that its userbase has now exceeded two billion users\cite{whatsapp_2b_users_archive_org}, and Facebook Messenger, which similarly reported having 1.3 billion users\cite{messenger_1pt3b_users}.
+However, there's been a growing trend of \textit{walled gardens}\cite{walled_gardens_gunnar_wolf_acm_2018}, where users may only contact other users of the same service.
+Examples of such services are Slack\cite{walled_gardens_gunnar_wolf_acm_2018}; WhatsApp, which has announced that its userbase has now exceeded two billion users\cite{whatsapp_2b_users_archive_org}; and Facebook Messenger, which similarly reported having 1.3 billion users\cite{messenger_1pt3b_users}.
 
 \section{Initial Problem}\label{subsec:initial_problem_statement}
-\paragraph{Communication Silos}
+\paragraph{Walled Gardens}
+Closed-platform services, or walled gardens, are a fragmenting influence on peoples' communication.
 Although these services run over the internet, they are designed in isolation, and do not adhere to an external standard.
 In order to use such a service, a user must acquire a client designed for this private procotol.
-This approach does not scale well in terms of battery or network traffic, as each application separately performs similar routine actions, such as checking for and sending messages.
-We refer to the challenges of communication silos as \textit{the silo problem}.
+This has the negative effect of people having to keep track of whom to contact on which service.
+They are forced to rely on external vendors for the storage and security of their messages.
+We refer to this problem as \textit{the walled garden problem}.
 
 \paragraph{Security}
 In the typical client-server architecture, the client is forced to operate with some level of trust.
@@ -26,7 +28,7 @@ In the cases of WhatsApp and Facebook Messenger, several such features are boast
 \paragraph{Matrix}
 The Matrix open standard\cite{matrix_org_spec} is a specification for a network similar in structure to email.
 It supports more recent features, such as live messaging, calls, and video conferencing.
-This standard is a solution to \textit{the silo problem}, and has several strong points.
+This standard is a solution to \textit{the walled garden problem}, and has several strong points.
 It is designed for interoperability.
 It has multiple clients\cite{matrix_org_clients} and SDKs\cite{matrix_org_sdks}.
 Through bridges, Matrix allows communicating with different protocols\cite{matrix_org_bridges}.
