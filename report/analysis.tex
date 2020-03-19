@@ -96,10 +96,10 @@ This \ac{API} establishes a method for mapping third-party identifiers to Matrix
 This allows people to find Matrix users by alternative service identifiers, such as email or their telephone numbers, or accounts at different services.
 
 \subsection{Push Gateway}
-The homeserver can forward events to the Push Gateway, which then passes this information to push notification services provided by Google and Apple.
-As of the writing of this report, this API is trivial, with only one defined request.
-It is also unnecessary for a homeserver to contact a service external to the device in order to provide a notification.
-Ideally, this notification could be displayed directly by the homeserver, or by calling a custom Push Gateway which avoids the extra round trip.
+The homeserver can forward events to the Push Gateway, which then passes this information to push notification services.
+While a dedicated homeserver can be expected to run at all times, a peer-to-peer homeserver running on a mobile device should only run when strictly necessary.
+Push notifications could therefore be useful, but would have to be external to the homeserver running on-device.
+
 
 \subsection{Peer-to-Peer Implications}
 TODO: 
