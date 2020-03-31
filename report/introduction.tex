@@ -23,28 +23,67 @@ Platforms which follow this architecture for messaging therefore store the messa
 The storage format and security depends on the software run on the server, which receives, stores and passes the messages on.
 For closed-source vendors, it is intractable to know whether the messages passed are done so securely, or whether third parties can access the data.
 Users are therefore forced to either rely on the word of the service providers, or use an alternative.
-In the cases of WhatsApp and Facebook Messenger, several such features are boasted, but regardless not verified\cite{twitter_comms_protocol_comparison}.
+In the cases of WhatsApp and Facebook Messenger, several such features are advertised, but regardless not verified\cite{twitter_comms_protocol_comparison}.
 
-\paragraph{Matrix}
-The Matrix open standard\cite{matrix_org_spec} is a specification for a network similar in structure to email.
+\section{Matrix}
+The Matrix standard is a potential solution to the \textit{walled garden problem}, and is described as an "open standard for interoperable, decentralised, real-time communication over IP"\cite{matrix_org}.
+On the choice of the name Matrix, the Matrix organization states: "We are called Matrix because we provide a structure in which all communication can be matrixed together."\cite{matrix_org_faq}
+
+\begin{figure}[h]
+    \centering
+    Matrix = \bordermatrix{~      & Work & Friends & Family & Hobbies\cr
+                        Msg       & 1 & 1 & 1 & 1\cr
+                        Voice     & 1 & 1 & 1 & 1\cr
+                        Video     & 1 & 1 & 1 & 1\cr
+                        Bots      & 1 & 1 & 1 & 1\cr
+                        Bridges   & 1 & 1 & 1 & 1\cr}
+    \caption{Matrix provides the fundamental structure for matrixing together all communication.}
+    \label{}
+\end{figure}
+
+The Matrix open standard\cite{matrix_org_spec} is a specification for a network of independent servers which may communicate.
 It supports more recent features, such as live messaging, calls, and video conferencing.
-This standard is a solution to \textit{the walled garden problem}, and has several strong points.
-It is designed for interoperability.
-It has multiple clients\cite{matrix_org_clients} and SDKs\cite{matrix_org_sdks}.
-Through bridges, Matrix allows communicating with different protocols\cite{matrix_org_bridges}.
+Figure \ref{fig:matrix_structure} demonstrates how four users might be connected via the Matrix protocol.
+There are three servers: matrix.a.com, matrix.b.com, and a Third Party, e.g. Slack.
+The users are @a:a.com, @b:b.com, c, and @d:b.com.
+The third party protocol is enabled via a Bridge to matrix.a.com, which allows the native Matrix users to communicate with c, and vice versa.
+
+\begin{figure}[h]
+    \input{graphics/matrix.tex}
+    \caption{Matrix allows users to communicate across servers. Using bridges, Matrix users may even communicate with people registered with third party protocols.}
+    \label{fig:matrix_structure}
+\end{figure}
+
+The standard has been implemented by several clients\cite{matrix_org_clients}.
+There is ongoing work on implementing SDKs\cite{matrix_org_sdks}, which provide the foundational logic for implementing more applications.
+Through bridges, Matrix allows communicating with different protocols\cite{matrix_org_bridges}, such as WhatsApp or Messenger.
 The reference implementation of the Matrix open standard is Synapse\cite{matrix_org_synapse}, which is written in Python.
-There are many volunteers who build alternative homeservers and clients in their free time.
+The standard was declared stable and released as 1.0 on June 10th, 2019\cite{matrix_org_spec}, and is still very young.
+Its limitations become apparent as one considers its applications, such as peer-to-peer Matrix.
+
 
 \paragraph{Peer-to-Peer Matrix}
 The Matrix team is working on Dendrite\cite{matrix_org_dendrite}, an experimental server written in Golang, which is the base for peer-to-peer experiments.
-This approach overcomes some of the drawbacks of the classical implementation of Matrix, which requires each user to be registered with a homeserver.
+This approach overcomes some of the drawbacks of the classical implementation of Matrix, which requires each user to be registered with a homeserver with a DNS entry and a static IP address.
 The development of Peer-to-Peer Matrix is currently experimental and ongoing.
+Its application is currently limited to the web at \url{https://p2p.riot.im}, but could expand into other fields such as embedded, or mobile devices.
 
 \paragraph{Smartphones}
+Due to the popularity and widespread use of mobile phones, experimentation with peer-to-peer Matrix on smartphones would be an interesting task.
 \textit{Besides an experimental browser-based solution\cite{fosdem_event_p2p_matrix}, there is no peer-to-peer Matrix application for mobile clients, such as smartphones.}
-The benefits of having an on-device homeserver for a telephone would allow users to get started with minimal effort, and allow them to have full control of their  data.
-We should consider mobile constraints, such as battery life and limited memory.
+
+The benefits of having an on-device homeserver for a telephone would have strong benefits for users, such as:
+\begin{itemize}
+    \item Full control of data,
+    \item No registration necessary, and
+    \item Increased privacy.
+\end{itemize}
+
+\noindent Mobile devices are by definition constrained by battery life, and often a reduced form factor.
+In order for peer-to-peer Matrix to succeed on mobile, it needs to respect the limited resources available on the device.
+
 
 \begin{center}
     We propose the following initial problem: \textit{What can we do to get peer-to-peer Matrix on the smartphone, while respecting the constraints of mobile phones, such as battery life and memory usage?}
 \end{center}
+
