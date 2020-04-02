@@ -111,14 +111,48 @@ TODO:
     Maybe we'll want to propose a change?
 
 \section{Homeservers}
-The Matrix organization has two official clients, Synapse\cite{matrix_org_synapse} and Dendrite\cite{matrix_org_dendrite}.
+The Matrix organization has two official homeservers, Synapse\cite{matrix_org_synapse} and Dendrite\cite{matrix_org_dendrite}.
+Homeservers perform the bulk of the work in the Matrix network.
 
 \subsection{Synapse}
 TODO:
     Describe Synapse, show snippets of salient parts (as this is the reference implementation, and might clarify some ambiguities in the standard).
+
 \subsection{Dendrite}
-TODO:
-    Describe Dendrite, discuss the standard implementation and how it's different with p2p.
+Because of the performance and scalability issues that Synapse faces, it is not the base for future experimentation such as peer-to-peer infrastructure.
+Instead, the bulk of that work goes on in the Dendrite implementation.
+The source code is hosted on \url{https://github.com/matrix-org/dendrite}.
+
+\begin{figure}
+    \centering
+    \resizebox{0.9\linewidth}{!}{\input{graphics/dendrite_design.tex}}
+    \caption{
+        The homeserver can be separated into two main components: \textit{writers} and \textit{readers}.
+        Writers respond to API requests by appending to the event log.
+        Readers respond to API requests by returning information from the event log.
+        Source: \cite{dendrite_design_md}.
+    }
+    \label{fig:dendrite_design}
+\end{figure}
+
+\paragraph{Dendrite Architecture}
+The Dendrite design aims to increase simplicity and improve scalability issues in Synapse by using a log based architecture for events.
+The central concept is therefore the \textit{event log} which is a history of everything that has happened in a room.
+The event log is append only, and accessed by two types of components: \textit{writers} and \textit{readers}.
+An example of a writer could be the API that marks a user as active.
+A reader could be the logic that synchronizes state with the client.
+Figure \ref{fig:dendrite_design} provides a high-level illustration of the flow of data in this design.
+Writers and readers must also have some way of computing the room state from the event log, or querying the room state from a central mediator component, such as a room server.
+This allows writers to verify that an event is valid before appending it to the log.
+Readers in a similar manner use the room state to know which servers and users have enough permissions to view the events.
+
+\paragraph{Dendrite Code}
+Dendrite is written in Go\cite{golang_org} and separated into several packages.
+The Go programming language supports Android compilation, and Dendrite should therefore be portable to the smartphone.
+The peer-to-peer code is implemented on the \texttt{master} branch for WASM, and depends on sqlite, which allows the homeserver to run completely in the browser.
+Unfortunately, the WASM implementation of peer-to-peer Dendrite does not support cross-compilation for Android, and must instead be in pure Go.
+The \texttt{p2p} branch has a pure Go implementation of peer-to-peer, but is still using postgres.
+In order to use the latest developments for peer-to-peer Matrix, the \texttt{p2p} branch must be merged with \texttt{master}.
 
 \section{Mobile Clients}
 \subsection{Riot}
