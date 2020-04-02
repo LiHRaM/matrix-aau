@@ -28,7 +28,7 @@ Consider, for example, the Zoom client, which has no end to end encryption, desp
 
 \begin{figure}
     \centering
-    \resizebox{0.7\linewidth}{!}{\input{graphics/client-server.tex}}
+    \resizebox{0.6\linewidth}{!}{\input{graphics/client-server.tex}}
     \caption{
         Typical client-server architecture.
         Client A and Client B communicate via a Server, which is responsible for passing on the messages safely.
@@ -66,7 +66,9 @@ The third party protocol is enabled via a Bridge to \textit{matrix.a.com}, which
 \begin{figure}
     \centering
     \resizebox{0.7\linewidth}{!}{\input{graphics/matrix.tex}}
-    \caption{Matrix allows users to communicate across servers. Using bridges, Matrix users may even communicate with people registered with third party protocols.}
+    \caption{
+        Matrix allows users to communicate across servers. 
+        Using federation, each server keeps an updated copy of metadata created by its clients.}
     \label{fig:matrix_structure}
 \end{figure}
 
