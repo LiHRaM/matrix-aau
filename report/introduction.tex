@@ -16,22 +16,24 @@ This has the negative effect of people having to keep track of multiple services
 They are forced to rely on external vendors for the storage and security of their messages.
 We refer to this problem as \textit{the walled garden problem}.
 
-\paragraph{Security}
-In the typical client-server architecture, the client is forced to operate with some level of trust.
-In the case of email, the original architecture required that both participants be online, but has now adapted such that some server just needs to receive it and be able to pass it on to the recipient when possible\cite{tomlinson2009first}.
+\paragraph{Trust}
+One of the main drawbacks of using a walled garden service is \textit{trust}.
+Client-server architecture places servers as mediators between clients, forcing all communication to go through servers, as illustrated in figure \ref{fig:client_server}.
+A common feature of communications servers is that the entirety of messages be available for an indefinite period of time.
 Platforms which follow this architecture for messaging therefore store the messages of all participants.
-The storage format and security depends on the software run on the server, which receives, stores and passes the messages on.
-For closed-source vendors, it is intractable to know whether the messages passed are done so securely, or whether third parties can access the data.
-Users are therefore forced to either rely on the word of the service providers, or use an alternative.
+For closed-source vendors, it is intractable to know whether the messages passed are done so securely and privately.
+Users are forced to either rely on the word of the service providers, or use an alternative.
 In the cases of WhatsApp and Facebook Messenger, several such features are advertised, but regardless not verified\cite{twitter_comms_protocol_comparison}.
-Consider, for example, the Zoom client, which has no end to end encryption, despite saying they do\cite{zoom_e2ee_or_not}.
+Another example is the Zoom service, which has recently been exposed for lying about having end-to-end encryption\cite{zoom_e2ee_or_not}.
+Trust is an important factor in online communication.
+Any proposed solution to the walled garden problem must account for that aspect.
 
 \begin{figure}
     \centering
     \resizebox{0.6\linewidth}{!}{\input{graphics/client-server.tex}}
     \caption{
         Typical client-server architecture.
-        Client A and Client B communicate via a Server, which is responsible for passing on the messages safely.
+        Client A and Client B communicate via a Server, which is responsible for passing on the messages.
     }
     \label{fig:client_server}
 \end{figure}
@@ -40,7 +42,7 @@ Consider, for example, the Zoom client, which has no end to end encryption, desp
 The Matrix standard is a potential solution to the \textit{walled garden problem}, and is described as an "open standard for interoperable, decentralised, real-time communication over IP"\cite{matrix_org}.
 On the choice of the name Matrix, the Matrix organization states: "We are called Matrix because we provide a structure in which all communication can be matrixed together."\cite{matrix_org_faq}
 
-\begin{figure}[]
+\begin{figure}
     \centering
     \resizebox{\linewidth}{!}{
         Matrix = \bordermatrix{
@@ -57,18 +59,24 @@ On the choice of the name Matrix, the Matrix organization states: "We are called
 \end{figure}
 
 The Matrix open standard\cite{matrix_org_spec} is a specification for a network of independent servers which may communicate.
-It supports more recent features, such as live messaging, calls, and video conferencing.
-Figure \ref{fig:matrix_structure} demonstrates how four users might be connected via the Matrix protocol.
-There are three servers: \textit{matrix.a.com}, \textit{matrix.b.com}, and a Third Party, e.g. \textit{Slack}.
-The users are \textit{@a:a.com}, \textit{@b:b.com}, \textit{c}, and \textit{@d:b.com}.
-The third party protocol is enabled via a Bridge to \textit{matrix.a.com}, which allows the native Matrix users to communicate with c, and vice versa.
+It supports recent features, such as live messaging, calls, and video conferencing.
+Figure \ref{fig:matrix_structure} demonstrates how two users might be connected via the Matrix protocol.
+There are two servers: \textit{matrix.a.com}, and \textit{matrix.b.com}.
+The users are \textit{@a:a.com}, and \textit{@b:b.com}.
+A message from \textit{@a:a.com} would pass through both of the servers before \textit{@b:b.com} would receive them.
+This is an implementation of the client-server architecture with a decentralized approach, which tackles the issue of trust.
+As servers can be owned and operated by anyone, users are not required to trust a third party.
+For the most extreme privacy concerns, a user might simply host a private server which only permitted internal communication, and required encryption on all channels.
+For more casual use cases, the network of servers provides redundancy, as messages are copied by each participating homeserver.
 
 \begin{figure}
     \centering
     \resizebox{0.7\linewidth}{!}{\input{graphics/matrix.tex}}
     \caption{
         Matrix allows users to communicate across servers. 
-        Using federation, each server keeps an updated copy of metadata created by its clients.}
+        Using federation, each server keeps an updated copy of metadata created by its clients.
+        People are encouraged to run their own Matrix servers, for increased privacy and performance.
+    }
     \label{fig:matrix_structure}
 \end{figure}
 
@@ -82,13 +90,18 @@ Its limitations become apparent as one considers its applications, such as peer-
 
 \paragraph{Peer-to-Peer Matrix}
 The Matrix team is working on Dendrite\cite{matrix_org_dendrite}, an experimental server written in Golang, which is the base for peer-to-peer experiments.
-This approach overcomes some of the drawbacks of the current implementation of Matrix, which requires each user to be registered with a homeserver with a DNS entry and a static IP address.
+This approach overcomes some of the drawbacks of the current implementation of Matrix, which requires each user to be registered with a homeserver with a \ac{DNS} entry and a static IP address.
+This requirement causes several issues:
+\begin{itemize}
+    \item Server management requires technical knowledge.
+    \item Some solutions require less knowledge, but can be expensive.
+    \item A server cannot be migrated between \ac{DNS} entries, i.e. it cannot change names.
+\end{itemize}
 Instead, peer-to-peer Matrix runs homeservers on-device.
-Each homeserver requires a unique, portable identifier.
-Users can no longer be associated with only homeserver, as they might run several in a peer-to-peer network.
+This solution does not have to cost money, and does not require knowledge of server management.
+Users do not have to sign up with an external homeserver.
 The development of Peer-to-Peer Matrix is currently experimental and ongoing.
 Its application is currently limited to the web at \url{https://p2p.riot.im}, but could expand into other fields such as embedded, or mobile devices.
-
 
 \paragraph{Smartphones}
 Due to the popularity and widespread use of mobile phones, experimentation with peer-to-peer Matrix on smartphones would be an interesting task.
@@ -101,9 +114,9 @@ The benefits of having an on-device homeserver for a telephone would have strong
     \item Increased privacy.
 \end{itemize}
 
-\noindent Mobile devices are by definition constrained by battery life, and often a reduced form factor.
-In order for peer-to-peer Matrix to succeed on mobile, it needs to respect the limited resources available on the device.
-
+\noindent
+Modern mobile devices have software which monitors the battery use of applications, and warns the user if applications exceed the normal range.
+To accomodate this limitation, considerations must be in the use of processors, memory and other resources.
 
 \begin{center}
     We propose the following initial problem: \textit{What can we do to get peer-to-peer Matrix on the smartphone, while respecting the constraints of mobile phones, such as battery life and memory usage?}
