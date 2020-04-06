@@ -1,4 +1,4 @@
-\chapter{Analysis}
+    \chapter{Analysis}
 We begin the analysis by examining the Matrix Open Standard.
 
 \section{The Matrix Standard}
@@ -14,11 +14,7 @@ The following \ac{API}s are defined\cite{matrix_org_spec}:
     \item \textbf{Push Gateway}: The way push notifications are implemented for Matrix events.
 \end{itemize}
 
-Each homeserver needs to be registered with a \ac{DNS} entry, by which they are currently identified.
-
-
-\subsection{Changes in the Standard}
-The Matrix standard is designed to be developed in the open, and has an established process for change\cite{matrix_org_spec_changes}.
+Each homeserver needs to be registered with a \ac{DNS} entry, by which they are identified.
 
 
 \subsection{Standard Terminology}
@@ -100,6 +96,13 @@ The homeserver can forward events to the Push Gateway, which then passes this in
 While a dedicated homeserver can be expected to run at all times, a peer-to-peer homeserver running on a mobile device should only run when strictly necessary.
 Push notifications could therefore be useful, but would have to be external to the homeserver running on-device.
 
+
+\subsection{Matrix Spec Changes}
+
+
+Contributions in this report can be submitted against the Matrix standard, which is developed in the open, and has an established process for change\cite{matrix_org_spec_changes}.
+Developing peer-to-peer Matrix for mobile requires several changes to the spec, such as decentralized accounts
+
 \subsection{Planned Changes}
 TODO:
     Discuss the changes to this spec that might influence how we understand or might want to approach the task.
@@ -110,7 +113,7 @@ TODO:
     This includes describing the Yggdrasil P2P network.
     Maybe we'll want to propose a change?
 
-\section{Homeservers}
+\section{Official Homeservers}
 The Matrix organization has two official homeservers, Synapse\cite{matrix_org_synapse} and Dendrite\cite{matrix_org_dendrite}.
 Homeservers perform the bulk of the work in the Matrix network.
 
