@@ -16,7 +16,6 @@ The following \ac{API}s are defined\cite{matrix_org_spec}:
 
 Each homeserver needs to be registered with a \ac{DNS} entry, by which they are identified.
 
-
 \subsection{Standard Terminology}
 We explain the different entities as defined by the Matrix standard.
 
@@ -97,19 +96,25 @@ While a dedicated homeserver can be expected to run at all times, a peer-to-peer
 Push notifications could therefore be useful, but would have to be external to the homeserver running on-device.
 
 
-\subsection{Matrix Spec Changes}
-Contributions in this report can be submitted against the Matrix standard, which is developed in the open, and has an established process for change\cite{matrix_org_spec_changes}.
-Developing peer-to-peer Matrix for mobile requires several changes to the spec, such as decentralized accounts
-
-\subsection{Planned Changes}
-TODO:
-    Discuss the changes to this spec that might influence how we understand or might want to approach the task.
-
-\subsection{Peer-to-Peer Implications}
-TODO: 
-    Discuss the differences between the peer-to-peer implementation in Dendrite and the standard, and why they are necessary.
-    This includes describing the Yggdrasil P2P network.
-    Maybe we'll want to propose a change?
+\section{Matrix Spec Changes}
+The Matrix standard is developed in the open.
+There is a defined process for proposing changes, which are known as Matrix Spec Changes\cite{matrix_org_spec_changes}.
+This process allows third parties to contribute to the Matrix standard and provide assistance with open proposals.
+With regard to peer-to-peer Matrix on mobile devices, the current spec has limitations:
+\begin{itemize}
+    \item{
+        \textbf{Centralized Accounts}: 
+        Although Matrix is a decentralized protocol, accounts are currently centralized.
+        As a peer-to-peer implementation would be running a homeserver per device, a user would have to register multiple accounts.
+        There is already a proposal for decentralized user accounts on Matrix, found in \cite{matrix_msc_??}.
+    }
+    \item{
+        \textbf{Homeserver identities}:
+        A homeserver is identified by a DNS record, which makes it impossible to roam between networks and IP addresses on mobile devices.
+        There is a proposal for using alternative ways of identifying servers in \cite{matrix_msc_??}.
+    }
+\end{itemize}
+These limitations must be solved in order to properly solve the initial problem stated in section \ref{subsec:initial_problem_statement}.
 
 \section{Official Homeservers}
 The Matrix organization has two official homeservers, Synapse\cite{matrix_org_synapse} and Dendrite\cite{matrix_org_dendrite}.
