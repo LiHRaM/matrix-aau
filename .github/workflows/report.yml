@@ -16,8 +16,9 @@ jobs:
     - name: Cache Tectonic Files
       id: cache-tectonic
       uses: actions/cache@v1
-      with: path: $HOME/.cache/Tectonic
-      key: ${{ runner.os }}-tectonic
+      with: 
+        path: $HOME/.cache/Tectonic
+        key: ${{ runner.os }}-tectonic
       
     - name: LaTeX compilation
       uses: lihram/tectonic-nix@v1.0-alpha
