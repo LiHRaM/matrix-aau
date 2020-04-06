@@ -1,11 +1,20 @@
-    \chapter{Analysis}
+\chapter{Analysis}
+Any solution to the initial problem requires an understanding of the protocols involved.
 We begin the analysis by examining the Matrix Open Standard.
 
+\section*{Aside: \faGithub~Github}
+Due to the open nature of the projects that this report considers, referring to repositories, issues and pull requests can become quite repetitive.
+In order to make it easier to write and read these references, we refer to GitHub issues and pull requests in the following manner: \github{org/repository\#ID}, where ID is a number identifying the issue.
+We refer to repositories simply as \github{org/repository}.
+For example, for the pull request at \url{https://github.com/lihram/aau/pull/1}, we write: \github{lihram/aau\#1}.
+Referring to multiple issues or pull requests is done similarly, \github{lihram/aau\#1,2}.
+
 \section{The Matrix Standard}
+The Matrix standard defines how entities interact in the Matrix network.
 An \ac{API} is a way in which programs can define how they communicate.
 The Matrix Standard defines several \ac{API}s.
 Each of these \ac{API}s is expected to communicate using \ac{JSON} over \ac{REST}.
-The following \ac{API}s are defined\cite{matrix_org_spec}:
+Th there are many issues and pull requests residing on Github that we might refer to
 \begin{itemize}
     \item \textbf{Client-Server}: A \textit{homeserver} interacting with a \textit{client}. In peer-to-peer Matrix, the \textit{client} and \textit{homeserver} are both on-device.
     \item \textbf{Server-Server}: Two or more \textit{homeservers} interacting. The servers synchronize state via \textit{federation}.
@@ -16,8 +25,9 @@ The following \ac{API}s are defined\cite{matrix_org_spec}:
 
 Each homeserver needs to be registered with a \ac{DNS} entry, by which they are identified.
 
-\subsection{Standard Terminology}
-We explain the different entities as defined by the Matrix standard.
+\subsection{Central Concepts}
+The standard can be decomposed into a set of entities which interact.
+It is vital to understand how these entities interact, and how these interactions may affect a peer-to-peer implementation.
 
 \paragraph{User}
 A user is registered with a homeserver, and identified thereby, e.g. \texttt{@user:example.com}.
@@ -74,9 +84,18 @@ Clients may use both \ac{HTTP} and \ac{HTTPS}.
 Due to the decentralized nature of the Matrix network, the server-server \ac{API} provides commands for synchronizing message history by pushing and retrieving messages, and sharing user information.
 Servers communicate in three main ways:
 \begin{itemize}
-    \item \ac{PDU}: A broadcast event which is historically important and shall be stored.
-    \item \ac{EDU}: A 1-to-1 event which is not historically important, does not need to be stored, and does not require a response.
-    \item Queries: Requests for information and the corresponding response.
+    \item{
+        \textbf{\ac{PDU}:} 
+        A broadcast event which is historically important and shall be stored.
+    }
+    \item{
+        \textbf{\ac{EDU}:}
+        A 1-to-1 event which is not historically important, does not need to be stored, and does not require a response.
+    }
+    \item{
+        \textbf{Queries:}
+        Requests for information and the corresponding response.
+    }
 \end{itemize}
 Servers must use \ac{HTTPS}.
 
@@ -106,12 +125,12 @@ With regard to peer-to-peer Matrix on mobile devices, the current spec has limit
         \textbf{Centralized Accounts}: 
         Although Matrix is a decentralized protocol, accounts are currently centralized.
         As a peer-to-peer implementation would be running a homeserver per device, a user would have to register multiple accounts.
-        There is already a proposal for decentralized user accounts on Matrix, found in \cite{matrix_msc_??}.
+        There is already an issue for decentralized user accounts on Matrix in \github{matrix-org/matrix-doc\#915}.
     }
     \item{
         \textbf{Homeserver identities}:
         A homeserver is identified by a DNS record, which makes it impossible to roam between networks and IP addresses on mobile devices.
-        There is a proposal for using alternative ways of identifying servers in \cite{matrix_msc_??}.
+        This issue has been raised several times, for example in \github{matrix-org/matrix-doc\#710,712}.
     }
 \end{itemize}
 These limitations must be solved in order to properly solve the initial problem stated in section \ref{subsec:initial_problem_statement}.
