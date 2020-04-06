@@ -140,13 +140,40 @@ The Matrix organization has two official homeservers, Synapse\cite{matrix_org_sy
 Homeservers perform the bulk of the work in the Matrix network.
 
 \subsection{Synapse}
+Synapse is the reference implementation of the homeserver \ac{API}s.
+It is hosted at \github{matrix-org/synapse}.
 TODO:
-    Describe Synapse, show snippets of salient parts (as this is the reference implementation, and might clarify some ambiguities in the standard).
+    Describe the architecture of Synapse.
+
+\paragraph{Synapse Code}
+Synapse is written in Python 3, and can use either SQLite or PostgreSQL for metadata storage.
+Python is a dynamically typed language, designed to be run by an interpreter.
+This has negative performance implications:
+\begin{itemize}
+    \item{
+        \textbf{Program Memory}: 
+        The entire program and is stored in the heap.
+        Allocating memory on the heap is more expensive than the stack, and requires garbage collection.
+    }
+    \item{
+        \textbf{Latency vs. Throughput}:
+        \ac{AOT} compilers perform heavy optimizations on code in the compilation step.
+        These optimizations are more difficult to make during interpretation, as the interpreter has to compromise between latency and throughput.
+        In other words, the more optimization the interpreter performs, the longer it takes the program to start.
+    }
+    \item{
+        \textbf{The Power of Types}:
+        Strongly typed languages provide more metadata than their weakly typed counterparts, which compilers can use for powerful optimizations.
+        Refactoring strongly typed programs is also safer, as the interfaces for the functions are more clearly defined, allowing tooling to assist the programmer to a greater degree.
+    }
+\end{itemize}
+
+Synapse is considered stable and feature-complete with regard to the specification, which Dendrite is not.
 
 \subsection{Dendrite}
 Because of the performance and scalability issues that Synapse faces, it is not the base for future experimentation such as peer-to-peer infrastructure.
 Instead, the bulk of that work goes on in the Dendrite implementation.
-The source code is hosted on \url{https://github.com/matrix-org/dendrite}.
+It is hosted at \github{matrix-org/dendrite}.
 
 \begin{figure}
     \centering
@@ -174,7 +201,7 @@ Readers in a similar manner use the room state to know which servers and users h
 \paragraph{Dendrite Code}
 Dendrite is written in Go\cite{golang_org} and separated into several packages.
 The Go programming language supports Android compilation, and Dendrite should therefore be portable to the smartphone.
-The peer-to-peer code is implemented on the \texttt{master} branch for WASM, and depends on sqlite, which allows the homeserver to run completely in the browser.
+The peer-to-peer code is implemented on the \texttt{master} branch for WASM, and depends on SQLite, which allows the homeserver to run completely in the browser.
 Unfortunately, the WASM implementation of peer-to-peer Dendrite does not support cross-compilation for Android, and must instead be in pure Go.
 The \texttt{p2p} branch has a pure Go implementation of peer-to-peer, but is still using postgres.
 In order to use the latest developments for peer-to-peer Matrix, the \texttt{p2p} branch must be merged with \texttt{master}.
