@@ -1,0 +1,3 @@
+[submodule "report/preamble"]
+	path = report/preamble
+	url = git@github.com:LiHRaM/preamble.git

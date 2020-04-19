@@ -1,20 +1,7 @@
 \documentclass[11pt,draft,twocolumn,notitlepage]{report}
-\usepackage{lipsum}
-\usepackage{url}
-\usepackage{cite}
-\usepackage{acronym}
-\usepackage[margin=2cm]{geometry}
-\usepackage{plex-serif}
-\usepackage{plex-mono}
-\usepackage{amsmath}
-\usepackage{enumitem}
-\usepackage{graphicx}
-\usepackage{tikz}
-\usepackage{Github}
-\setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt}
-
+\input{preamble/Base.tex}
 \frenchspacing
-
+\pagenumbering{roman}
 \title{Peer-to-Peer Matrix on Smartphones}
 \author{Hilmar Gústafsson \texttt{<hgusta16@student.aau.dk>}}
 \date{\small\today} % TODO: Set the date when done writing
@@ -25,14 +12,18 @@
     ...
 \end{abstract}
 \tableofcontents
-\input{preface.tex}
+\pagenumbering{arabic}
+\begin{fullwidth}
+    \input{preface.tex}
+\end{fullwidth}
 \input{introduction.tex}
 \input{analysis.tex}
 \input{implementation.tex}
 \input{discussion.tex}
 \input{conclusion.tex}
-\input{glossaries.tex}
-\onecolumn
-\bibliography{references}
-\bibliographystyle{plain}
+\begin{fullwidth}
+    \input{glossaries.tex}
+    \bibliography{references}
+    \bibliographystyle{plain}
+\end{fullwidth}
 \end{document}
