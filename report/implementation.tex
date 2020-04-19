@@ -1,0 +1,51 @@
+\chapter{Implementation}
+
+
+% \ac{P2P} Matrix is already being actively developed in the Dendrite repository at \github{matrix-org/dendrite}.
+% The work there is mostly focused on the implementation in JavaScript/WASM.
+% The \texttt{p2p} branch contains progress on a pure Go implementation of \ac{P2P}.
+% This branch does not support embedded databases though, whereas the master branch does.
+% The first step toward a mobile implementation is therefore integrating the two branches.
+
+\section{Dendrite P2P Integration}
+The work in the \texttt{p2p} branch at commit \texttt{af98bca}
+\footnote{
+    As this branch has been merged into master, it may not exist at the time of reading. It can however be found at my fork at \github{LiHRaM/dendrite/p2p-historical}.
+}
+contains experiments which modified the \texttt{dendrite-monolith-server} to run as a \ac{P2P} server.
+Key libraries have also been modified to account for the optional \ac{P2P} capabilities.
+We merge these changes with the master branch in \github{matrix-org/dendrite\#956}.
+These changes introduce a new command in the \texttt{cmd} folder: \texttt{dendrite-demo-libp2p}, and revert the changes which pollute the pre-existing non-p2p dendrite code.
+\ac{P2P} libraries are extracted into libraries with the command.
+
+Additionally, after the merge request, further refactoring is done to separate the command entirely from the library.
+This separation allows us to run a P2P server on the computer to test against the embedded Dendrite on mobile.
+
+\section{Embedding Dendrite}
+Dendrite is embedded using Gomobile.
+The library has a single entrypoint as seen in listing \ref{lst:dendrite_init}.
+\begin{lstlisting}[language=Go, label={lst:dendrite_init}, caption={
+    The Init function spawns a Dendrite server as a monolith.
+    The monolith creates SQLite databases in the directory specified by \texttt{path}.
+    The other two parameters are used to avoid namespace and port clashing.
+    This is necessary for spawning more than one instance on the same host.
+}]
+func Init(
+    path string, 
+    instanceName string, 
+    instancePort int) {}
+\end{lstlisting}
+
+\subsection{Embedding in Riot and RiotX}
+
+
+\begin{lstlisting}[language=Kotlin, label={lst:riotx_init}, caption={
+    A simple approach to embedding Dendrite in RiotX is simply to spawn a new thread with a call to the \texttt{Init} method as shown in listing \ref{lst:dendrite_init}
+}]
+thread(start = true) {
+    Dendrite.init(
+        filesDir.path,
+        "dendrite-server", 
+        8080)
+}
+\end{lstlisting}
