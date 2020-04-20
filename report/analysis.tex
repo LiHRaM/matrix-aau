@@ -9,11 +9,18 @@ The Matrix Standard defines several \ac{API}s.
 Each of these \ac{API}s is expected to communicate using \ac{JSON} over \ac{REST}.
 Th there are many issues and pull requests residing on Github that we might refer to
 \begin{itemize}
-    \item \textbf{Client-Server}: A \textit{homeserver} interacting with a \textit{client}. In \ac{P2P} Matrix, the \textit{client} and \textit{homeserver} are both on-device.
-    \item \textbf{Server-Server}: Two or more \textit{homeservers} interacting. The servers synchronize state via \textit{federation}.
-    \item \textbf{Application Service}: Interoperability and extensibility is largely achieved through application services, which can \textit{bridge} external chat protocols to Matrix, allowing e.g. interoperability between \ac{IRC} and Matrix.
-    \item \textbf{Identity Service}: Identity services enable external identities, such as email, mobile numbers, or other services to be attached to a Matrix user.
-    \item \textbf{Push Gateway}: The way push notifications are implemented for Matrix events.
+      \item \textbf{Client-Server}:
+            A \textit{homeserver} interacting with a \textit{client}.
+            In \ac{P2P} Matrix, the \textit{client} and \textit{homeserver} are both on-device.
+      \item \textbf{Server-Server}:
+            Two or more \textit{homeservers} interacting.
+            The servers synchronize state via \textit{federation}.
+      \item \textbf{Application Service}:
+            Interoperability and extensibility is largely achieved through application services, which can \textit{bridge} external chat protocols to Matrix, allowing e.g.~interoperability between \ac{IRC} and Matrix.
+      \item \textbf{Identity Service}:
+            Identity services enable external identities, such as email, mobile numbers, or other services to be attached to a Matrix user.
+      \item \textbf{Push Gateway}:
+            The way push notifications are implemented for Matrix events.
 \end{itemize}
 
 Each homeserver needs to be registered with a \ac{DNS} entry, by which they are identified.
@@ -22,32 +29,32 @@ Each homeserver needs to be registered with a \ac{DNS} entry, by which they are 
 The standard can be decomposed into a set of entities which interact.
 It is vital to understand how these entities interact, and how these interactions may affect a \ac{P2P} implementation.
 
-\paragraph{User}
-A user is registered with a homeserver, and identified thereby, e.g. \texttt{@user:example.com}.
+\subsubsection{User}
+A user is registered with a homeserver, and identified thereby, e.g.~\texttt{@user:example.com}.
 The user participates in conversations via rooms.
 The user's chat history is managed by all homeservers with users which participate in these rooms.
 
-\paragraph{Device}
+\subsubsection{Device}
 A client application corresponds roughly to what is termed a device in the Matrix standard.
 There are some caveats, for example, the same client on different browsers will be considered different devices per browser.
 A smartphone with separate mobile applications will also be considered multiple devices per application.
 The access of devices can be revoked via the Matrix \ac{API}, and they are used for managing encryption keys.
 Clients register themselves as devices on the first login.
 
-\paragraph{Event}
+\subsubsection{Event}
 All state changes are represented by events.
 Each event has a \texttt{type} field, which follows the Java package naming convention to avoid conflicts.
 For example, a message event has the type \texttt{m.room.message}.
 The Matrix Standard reserves all types starting with "\texttt{m.}".
 Events typically happen in the context of a room.
 
-\paragraph{Event Graph}
+\subsubsection{Event Graph}
 Because of network partitions, we cannot guarantee that all homeservers are connected to each other at all times.
 The specification specifies how events are structured, so that each homeserver may eventually become consistent with the others.
 The events are stored in a partially ordered \ac{DAG}.
 Events are assigned a monotonically increasing \texttt{depth} to ease comparison.
 
-\paragraph{Room}
+\subsubsection{Room}
 Rooms serve as the unit to which users can publish events.
 They are a flexible concept, but also a simple one.
 In order to send a direct message to another user, the user will have to create a room, invite the other user and publish a message to the room.
@@ -61,11 +68,11 @@ Rooms all have a specific version, which specifies how they operate.
 When new features are implemented for rooms, they are made available by adding a new version.
 Rooms change versions via upgrades.
 
-\paragraph{Identity}
+\subsubsection{Identity}
 The standard supports mappings of third party identities to Matrix identities.
 Examples of third party entities are email, social media accounts and phone numbers.
 
-\paragraph{Profiles}
+\subsubsection{Profiles}
 Users can store information in their profiles, such as images, display names, etc.
 
 \subsection{Client-Server}
@@ -77,20 +84,20 @@ Clients may use both \ac{HTTP} and \ac{HTTPS}.
 Due to the decentralized nature of the Matrix network, the server-server \ac{API} provides commands for synchronizing message history by pushing and retrieving messages, and sharing user information.
 Servers communicate in three main ways:
 \begin{itemize}
-    \item{
-          \textbf{\ac{PDU}:}
-          A broadcast event which is historically important and shall be stored.
-          \textit{Example}: A message was sent.
-          }
-    \item{
-          \textbf{\ac{EDU}:}
-          A 1-to-1 event which is not historically important, does not need to be stored, and does not require a response.
-          \textit{Example}: A user is typing a message.
-          }
-    \item{
-          \textbf{Queries:}
-          Requests for information and the corresponding response.
-          }
+      \item{
+            \textbf{\ac{PDU}:}
+            A broadcast event which is historically important and shall be stored.
+            \textit{Example}: A message was sent.
+            }
+      \item{
+            \textbf{\ac{EDU}:}
+            A 1-to-1 event which is not historically important, does not need to be stored, and does not require a response.
+            \textit{Example}: A user is typing a message.
+            }
+      \item{
+            \textbf{Queries:}
+            Requests for information and the corresponding response.
+            }
 \end{itemize}
 Servers must use \ac{HTTPS}, although it is possible to go without, for example while debugging or testing locally.
 
@@ -116,17 +123,17 @@ There is a defined process for proposing changes, which are known as Matrix Spec
 This process allows third parties to contribute to the Matrix standard and provide assistance with open proposals.
 With regard to \ac{P2P} Matrix on mobile devices, the current spec has limitations:
 \begin{itemize}
-    \item{
-          \textbf{Centralized Accounts}:
-          Although Matrix is a decentralized protocol, accounts are currently centralized.
-          As a \ac{P2P} implementation would be running a homeserver per device, a user would have to register multiple accounts.
-          There is already an issue for decentralized user accounts on Matrix in \github{matrix-org/matrix-doc\#915}.
-          }
-    \item{
-          \textbf{Homeserver identities}:
-          A homeserver is identified by a DNS record, which makes it impossible to roam between networks and IP addresses on mobile devices.
-          This issue has been raised several times, for example in \github{matrix-org/matrix-doc\#710,712}.
-          }
+      \item{
+            \textbf{Centralized Accounts}:
+            Although Matrix is a decentralized protocol, accounts are currently centralized.
+            As a \ac{P2P} implementation would be running a homeserver per device, a user would have to register multiple accounts.
+            There is already an issue for decentralized user accounts on Matrix in \github{matrix-org/matrix-doc\#915}.
+            }
+      \item{
+            \textbf{Homeserver identities}:
+            A homeserver is identified by a DNS record, which makes it impossible to roam between networks and IP addresses on mobile devices.
+            This issue has been raised several times, for example in \github{matrix-org/matrix-doc\#710,712}.
+            }
 \end{itemize}
 These limitations must be solved in order to properly solve the initial problem stated in section \ref{subsec:initial_problem_statement}.
 
@@ -140,27 +147,27 @@ Synapse is the reference implementation of the homeserver \ac{API}s.
 It is considered stable and feature-complete with regard to the specification.
 It is hosted at \github{matrix-org/synapse}.
 
-\paragraph{Synapse Code}
+\subsubsection{Synapse Code}
 Synapse is written in Python 3.
 Python is a dynamically typed language, designed to be run by an interpreter.
 This has performance implications:
 \begin{itemize}
-    \item{
-          \textbf{Program Memory}:
-          The entire program and is stored in the heap.
-          Allocating memory on the heap is more expensive than the stack, and requires garbage collection.
-          }
-    \item{
-          \textbf{Latency vs. Throughput}:
-          \ac{AOT} compilers perform heavy optimizations on code in the compilation step.
-          These optimizations are more difficult to make during interpretation, as the interpreter has to compromise between latency and throughput.
-          In other words, the more optimization the interpreter performs, the longer it takes the program to start.
-          }
-    \item{
-          \textbf{The Power of Types}:
-          Strongly typed languages provide more metadata than their weakly typed counterparts, which compilers can use for powerful optimizations.
-          Refactoring strongly typed programs is also safer, as the interfaces for the functions are more clearly defined, allowing tooling to assist the programmer to a greater degree.
-          }
+      \item{
+            \textbf{Program Memory}:
+            The entire program and is stored in the heap.
+            Allocating memory on the heap is more expensive than the stack, and requires garbage collection.
+            }
+      \item{
+            \textbf{Latency vs.~Throughput}:
+            \ac{AOT} compilers perform heavy optimizations on code in the compilation step.
+            These optimizations are more difficult to make during interpretation, as the interpreter has to compromise between latency and throughput.
+            In other words, the more optimization the interpreter performs, the longer it takes the program to start.
+            }
+      \item{
+            \textbf{The Power of Types}:
+            Strongly typed languages provide more metadata than their weakly typed counterparts, which compilers can use for powerful optimizations.
+            Refactoring strongly typed programs is also safer, as the interfaces for the functions are more clearly defined, allowing tooling to assist the programmer to a greater degree.
+            }
 \end{itemize}
 
 \subsection{Dendrite}
@@ -169,18 +176,18 @@ Instead, the bulk of that work goes on in the Dendrite implementation.
 It is hosted at \github{matrix-org/dendrite}.
 
 \begin{figure}
-    \centering
-    \resizebox{0.9\linewidth}{!}{\input{graphics/dendrite_design.tex}}
-    \caption{
-        The homeserver can be separated into two main components: \textit{writers} and \textit{readers}.
-        Writers respond to API requests by appending to the event log.
-        Readers respond to API requests by returning information from the event log.
-        Source: \cite{dendrite_design_md}.
-    }
-    \label{fig:dendrite_design}
+      \centering
+      \resizebox{0.9\linewidth}{!}{\input{graphics/dendrite_design.tex}}
+      \caption{
+            The homeserver can be separated into two main components: \textit{writers} and \textit{readers}.
+            Writers respond to API requests by appending to the event log.
+            Readers respond to API requests by returning information from the event log.
+            Source: \cite{dendrite_design_md}.
+      }
+      \label{fig:dendrite_design}
 \end{figure}
 
-\paragraph{Dendrite Architecture}
+\subsubsection{Dendrite Architecture}
 The Dendrite design aims to increase simplicity and improve scalability issues in Synapse by using a log based architecture for events.
 The central concept is therefore the \textit{event log} which is a history of everything that has happened in a room.
 The event log is append only, and accessed by two types of components: \textit{writers} and \textit{readers}.
@@ -191,7 +198,7 @@ Writers and readers must also have some way of computing the room state from the
 This allows writers to verify that an event is valid before appending it to the log.
 Readers in a similar manner use the room state to know which servers and users have enough permissions to view the events.
 
-\paragraph{Dendrite Code}
+\subsubsection{Dendrite Code}
 Dendrite is written in Go\cite{golang_org} and separated into several libraries, which can be accessed through commands.
 The Go programming language supports Android compilation through Gomobile\cite{gomobile}, and Dendrite should therefore be portable to the smartphone.
 The \ac{P2P} code is implemented on the \texttt{master} branch for JavaScript/WASM, and depends on SQLite, which allows the homeserver to run completely in the browser.
@@ -199,38 +206,53 @@ Unfortunately, the JavaScript/WASM implementation of \ac{P2P} Dendrite does not 
 The \texttt{p2p} branch has a pure Go implementation of \ac{P2P}, but does not support SQLite.
 In order to use the latest developments for \ac{P2P} Matrix, the \texttt{p2p} branch must be merged with \texttt{master}.
 
+\subsubsection{Libp2p}
+Dendrite uses \ac{P2P} libraries provided by Libp2p, which is a collection of protocols, libraries and implementations for peer-to-peer networking\cite{libp2p}.
+The JavaScript implementation is capable of peer discovery across the internet using a protocol known as the WebSocket Star protocol, the source code is at \github{libp2p/js-libp2p-websocket-star}.
+Unfortunately, this protocol is not supported in Go\footnote{
+      \url{libp2p.io/implementations} under libp2p-webrtc-star, see Go column.
+}.
+The Go implementation is still capable of peer discovery on a local network, however, which is sufficient for testing.
 
-\subsection{Synapse vs. Dendrite}
+\subsection{Gomobile}
+Gomobile is a Go program which extends the Go compiler by providing commands for generating Android and iOS apps and libraries\cite{gomobile}.
+Generating an app with Gomobile requires that the entire application stack is written in Go, which includes the user interface and client logic.
+This approach would require a client application to be written in Go.
+Alternatively, Gomobile can generate Java bindings from Go libraries.
+Riot and RiotX are written in Java and Kotlin respectively, and can therefore both reference the bindings generated by Gomobile from Go libraries.
+The second approach would require less work, as existing code can be used for both the client and server.
+
+\subsection{Synapse vs.~Dendrite}
 We consider the pros and cons of each homeserver and the requirements for the project.
 According to the initial problem, we have the following requirements for a homeserver:
 \begin{enumerate}
-    \item{
-          The homeserver supports \ac{P2P} networking, or can be extended to do so.
-          }
-    \item{
-          The homeserver runs on mobile devices, or can be ported to do so.
-          }
-    \item{
-          The homeserver is efficient, and respects the limited resources of the device, or can be modified to do so.
-          }
+      \item{
+            The homeserver supports \ac{P2P} networking, or can be extended to do so.
+            }
+      \item{
+            The homeserver runs on mobile devices, or can be ported to do so.
+            }
+      \item{
+            The homeserver is efficient, and respects the limited resources of the device, or can be modified to do so.
+            }
 \end{enumerate}
 With regard to these requirements, Dendrite is clearly the right choice, due to the following reasons:
 \begin{itemize}
-    \item{
-          \textbf{\ac{P2P} Support}
-          The Matrix team is already experimenting with \ac{P2P} support in Dendrite.
-          The repository contains at least two separate implementations of \ac{P2P}, one in JavaScript and one in Go\cite{fosdem_event_p2p_matrix}.
-          }
-    \item{
-          \textbf{Gomobile}
-          The Go language team supports mobile applications in Go via Gomobile\cite{gomobile}.
-          Gomobile can generate pure Go apps, or library bindings for pre-existing apps.
-          Using Gomobile, Dendrite can be ported to mobile, e.g. as a library in the client app, effectively embedding the server in the mobile client.
-          }
-    \item{
-          \textbf{Efficiency}
-          Due to \ac{AOT} compilation alone, Go is better suited for mobile development than Python.
-          }
+      \item{
+            \textbf{\ac{P2P} Support}
+            The Matrix team is already experimenting with \ac{P2P} support in Dendrite.
+            The repository contains at least two separate implementations of \ac{P2P}, one in JavaScript and one in Go\cite{fosdem_event_p2p_matrix}.
+            }
+      \item{
+            \textbf{Gomobile}
+            The Go language team supports mobile applications in Go via Gomobile\cite{gomobile}.
+            Gomobile can generate pure Go apps, or library bindings for pre-existing apps.
+            Using Gomobile, Dendrite can be ported to mobile as a library in the client app, effectively embedding the server in the mobile client.
+            }
+      \item{
+            \textbf{Efficiency}
+            Due to \ac{AOT} compilation alone, Go is better suited for mobile development than Python.
+            }
 \end{itemize}
 
 \section{Mobile Clients}
@@ -249,11 +271,11 @@ It is capable of registering an account and logging in on a Dendrite homeserver.
 According to the introductory \texttt{README.md} on the official repository at \github{vector-im/riot-android}, development has mostly shifted to RiotX.
 
 \subsection{RiotX}
-RiotX is an experimental client at a similar stage as Dendrite, i.e. not feature complete, but intended as the reference client for Android in the future.
+RiotX is an experimental client at a similar stage as Dendrite, i.e.~not feature complete, but intended as the reference client for Android in the future.
 It is mostly written in Kotlin, which is currently the recommended language by Google for Android development.
 It is not capable of connecting to a Dendrite homeserver currently, complaining that it is an outdated homeserver.
 
-\subsection{Riot vs. RiotX}
+\subsection{Riot vs.~RiotX}
 For the purpose of this project, the client does not need to be modified a great deal.
 The only necessary change is to embed the homeserver into the client at launch, so that it is capable of running independently.
 As Riot is compatible with Dendrite, and RiotX is not, initially it might be easier to experiment with Riot.
@@ -263,22 +285,22 @@ As the changes to the client application is minimal, this is not a high cost.
 
 \section{Problem Statement}
 \begin{figure}
-    \centering
-    \resizebox{0.8\linewidth}{!}{\input{graphics/p2p-embed.tex}}
-    \caption{
-        By embedding the homeserver in the client application, two clients can communicate with each other without any external homeserver.
-    }
-    \label{fig:p2p-embed}
+      \centering
+      \resizebox{0.8\linewidth}{!}{\input{graphics/p2p-embed.tex}}
+      \caption{
+            By embedding the homeserver in the client application, two clients can communicate with each other without any external homeserver.
+      }
+      \label{fig:p2p-embed}
 \end{figure}
 From the analysis we have learned that \ac{P2P} Matrix is possible by embedding a homeserver onto a client.
 Dendrite is an existing homeserver with \ac{P2P} implemented, and can be embedded in either Riot for Android or RiotX.
 We have not built or tested this solution, however, and lack instrumentation to tell us how this can be improved.
 We have not considered what modifications could be made to the Dendrite homeserver for this specialized use.
-Examples of such optimization could e.g. be optimizing for a single user, as the typical homeserver is meant to scale for any number of users.
+Examples of such optimization could e.g.~be optimizing for a single user, as the typical homeserver is meant to scale for any number of users.
 Another optimization might be reducing duplicate work in the client/server architecture, as the client and the server run on the same device.
 We might want to consider implementing the WSS star protocol in Go, so that the new application supports \ac{P2P} over the internet instead of just the local network.
 
 \begin{center}
-    We propose the following problem statement:
-    \textit{What can we do to implement and improve \ac{P2P} Matrix on the smartphone, using Dendrite as the homeserver and Riot and RiotX as clients?}
+      We propose the following problem statement:
+      \textit{What can we do to implement and improve \ac{P2P} Matrix on the smartphone, using Dendrite as the homeserver and Riot and RiotX as clients?}
 \end{center}
