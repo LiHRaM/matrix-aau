@@ -1,46 +1,109 @@
 \chapter{Implementation}
-
-
-% \ac{P2P} Matrix is already being actively developed in the Dendrite repository at \github{matrix-org/dendrite}.
-% The work there is mostly focused on the implementation in JavaScript/WASM.
-% The \texttt{p2p} branch contains progress on a pure Go implementation of \ac{P2P}.
-% This branch does not support embedded databases though, whereas the master branch does.
-% The first step toward a mobile implementation is therefore integrating the two branches.
-
-\section{Dendrite P2P Integration}
-The work in the \texttt{p2p} branch at commit \texttt{af98bca}
-\footnote{
-    As this branch has been merged into master, it may not exist at the time of reading. It can however be found at my fork at \github{LiHRaM/dendrite/p2p-historical}.
-}
-contains experiments which modified the \texttt{dendrite-monolith-server} to run as a \ac{P2P} server.
-Key libraries have also been modified to account for the optional \ac{P2P} capabilities.
-We merge these changes with the master branch in \github{matrix-org/dendrite\#956}.
-These changes introduce a new command in the \texttt{cmd} folder: \texttt{dendrite-demo-libp2p}, and revert the changes which pollute the pre-existing non-p2p dendrite code.
-\ac{P2P} libraries are extracted into libraries with the command.
-
-Additionally, after the merge request, further refactoring is done to separate the command entirely from the library.
-This separation allows us to run a P2P server on the computer to test against the embedded Dendrite on mobile.
+Section 2.3.4 lists the benefits of Dendrite over Synapse for mobile clients.
+In order to get Dendrite working on mobile, we need to merge the \github{matrix-org/dendrite/p2p} branch with the master branch, which supports embedded databases.
+Android has excellent support for SQLite in apps, which is the data backing the Dendrite installation, and stores data such as account information and message metadata.
 
 \section{Embedding Dendrite}
-Dendrite is embedded using Gomobile.
-The library has a single entrypoint as seen in listing \ref{lst:dendrite_init}.
-\begin{lstlisting}[language=Go, label={lst:dendrite_init}, caption={
+We begin by preparing Dendrite for embedding.
+The \texttt{p2p} branch already supports \ac{P2P} messaging, but lacks support for embedded database technology.
+We merge this branch with master and refactor it for use within Android by creating a \texttt{server} Go package.
+
+\subsection{Dendrite Commands}
+The commands available in the Dendrite repository are listed in listing \ref{fig:dendrite-cmd-tree}.
+These commands are all located in the \texttt{cmd} subdirectory.
+
+
+\begin{lstfloat}
+  \begin{lstlisting}[
+  numbers=none,
+  xleftmargin=0pt,
+  framexleftmargin=0pt,
+  caption={
+    Running \texttt{tree -L 1} from the \texttt{cmd} directory in the Dendrite repository.
+    Each folder contains code for a separate command.
+  },
+  label={fig:dendrite-cmd-tree},
+]
+  dendrite/cmd
+  ├─ client-api-proxy
+  ├─ create-account
+  ├─ create-room-events
+  ├─ dendrite-appservice-server
+  ├─ dendrite-client-api-server
+  ├─ dendrite-demo-libp2p
+  ├─ dendrite-edu-server
+  ├─ dendrite-federation-api-server
+  ├─ dendrite-federation-sender-server
+  ├─ dendritejs
+  ├─ dendrite-media-api-server
+  ├─ dendrite-monolith-server
+  ├─ dendrite-public-rooms-api-server
+  ├─ dendrite-room-server
+  ├─ dendrite-sync-api-server
+  ├─ federation-api-proxy
+  ├─ generate-keys
+  ├─ kafka-producer
+  ├─ mediaapi-integration-tests
+  ├─ roomserver-integration-tests
+  └─ syncserver-integration-tests
+\end{lstlisting}
+\end{lstfloat}
+
+There are three kinds of commands:
+\begin{itemize}
+  \item{
+        \textbf{Monolith}:
+        The monolith is an independent instance of Dendrite, with all necessary services.
+        \texttt{dendrite-monolith-server}, \texttt{dendritejs} and \texttt{dendrite-demo-libp2p} are examples of a monolith.
+        }
+  \item{
+        \textbf{Service}:
+        The service is a single component of the Dendrite homeserver, separated to make scaling at large more straightforward.
+        }
+  \item{
+        \textbf{Test}:
+        The test command runs integration tests for a specific component or group of components of Dendrite.
+        }
+\end{itemize}
+
+
+\subsection{Peer-to-Peer Dendrite}
+The work in \github{matrix-org/dendrite/p2p} at commit \texttt{af98bca}\footnote{
+  As this branch has been merged into master, it may not exist at the time of reading.
+  It can however be found at my fork at \github{LiHRaM/dendrite/p2p-historical}.
+}
+contains experiments which modify the \texttt{dendrite-monolith-server} to run as a \ac{P2P} server.
+Key libraries are modified to account for the optional \ac{P2P} capabilities.
+We merge these changes with the master branch in \github{matrix-org/dendrite\#956}.
+These changes introduce a new command in the \texttt{cmd} folder: \texttt{dendrite-demo-libp2p}, and revert the changes which pollute the pre-existing non-p2p dendrite code.
+Further refactoring is done to separate the command from the library\footnote{See these changes at \github{LiHRaM/dendrite/master.}}.
+This separation allows us to generate Android bindings from the underlying library as well as running the command directly.
+
+\subsection{Android Library}
+The Go library has a single entrypoint as seen in listing \ref{lst:dendrite_init}.
+From the Go library, the Gomobile command generates an Android Archive (.aar) file which can be referenced via Android Studio.
+\begin{lstfloat}
+  \begin{lstlisting}[
+  language=Go, 
+  label={lst:dendrite_init}, 
+  caption={
     The Init function spawns a Dendrite server as a monolith.
     The monolith creates SQLite databases in the directory specified by \texttt{path}.
     The other two parameters are used to avoid namespace and port clashing.
     This is necessary for spawning more than one instance on the same host.
 }]
+// server.go
 func Init(
     path string, 
     instanceName string, 
     instancePort int) {}
 \end{lstlisting}
+\end{lstfloat}
 
-\subsection{Embedding in Riot and RiotX}
-
-
-\begin{lstlisting}[language=Kotlin, label={lst:riotx_init}, caption={
-    A simple approach to embedding Dendrite in RiotX is simply to spawn a new thread with a call to the \texttt{Init} method as shown in listing \ref{lst:dendrite_init}
+\subsection{Changing Riot and RiotX}
+\begin{lstfloat}
+  \begin{lstlisting}[language=Kotlin, label={lst:riotx_init}, caption={
+  A simple approach to embedding Dendrite in RiotX is simply to spawn a new thread with a call to the \texttt{Init} method as shown in listing \ref{lst:dendrite_init}
 }]
 thread(start = true) {
     Dendrite.init(
@@ -49,3 +112,4 @@ thread(start = true) {
         8080)
 }
 \end{lstlisting}
+\end{lstfloat}
