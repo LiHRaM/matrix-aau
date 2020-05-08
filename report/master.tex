@@ -1,4 +1,4 @@
-\documentclass[11pt,draft,twocolumn,notitlepage]{report}
+\documentclass[11pt,draft,notitlepage]{report}
 \input{preamble/Base.tex}
 \frenchspacing
 \pagenumbering{roman}
@@ -14,17 +14,13 @@
 \setcounter{tocdepth}{1}
 \tableofcontents
 \pagenumbering{arabic}
-\begin{fullwidth}
-    \input{preface.tex}
-\end{fullwidth}
+\input{preface.tex}
 \input{introduction.tex}
 \input{analysis.tex}
 \input{implementation.tex}
 \input{discussion.tex}
 \input{conclusion.tex}
-\begin{fullwidth}
-    \input{glossaries.tex}
-    \bibliography{references}
-    \bibliographystyle{plain}
-\end{fullwidth}
+\input{glossaries.tex}
+\bibliography{references}
+\bibliographystyle{plain}
 \end{document}
