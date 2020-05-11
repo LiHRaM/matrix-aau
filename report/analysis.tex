@@ -6,6 +6,7 @@ We begin the analysis by examining the Matrix Open Standard.
 The Matrix standard defines how entities interact in the Matrix network.
 An \ac{API} is a way in which programs can define how they communicate.
 The Matrix Standard defines several \ac{API}s.
+
 Each of these \ac{API}s is expected to communicate using \ac{JSON} over \ac{REST}.
 \begin{itemize}
       \item \textbf{Client-Server}:
@@ -43,8 +44,9 @@ Clients register themselves as devices on the first login.
 \subsubsection{Event}
 All state changes are represented by events.
 Each event has a \texttt{type} field, which follows the Java package naming convention to avoid conflicts.
-For example, a message event has the type \texttt{m.room.message}.
-The Matrix Standard reserves all types starting with "\texttt{m.}".
+
+For example, a message event has the type~\texttt{m.room.message}.
+The Matrix Standard reserves all types starting with the~\texttt{m.} prefix.
 Events typically happen in the context of a room.
 
 \subsubsection{Event Graph}
@@ -77,6 +79,7 @@ Users can store information in their profiles, such as images, display names, et
 \subsection{Client-Server}
 The \textit{homeserver} is essentially a database with an \ac{API} which can be accessed by the client via \ac{HTTP} \ac{API} calls.
 The client \ac{API} provides commands for sending messages, controlling rooms and synchronizing conversation history.
+
 Clients may use both \ac{HTTP} and \ac{HTTPS}.
 
 \subsection{Server-Server}
@@ -138,6 +141,7 @@ These limitations must be solved in order to properly solve the initial problem 
 
 \section{Official Homeservers}\label{sec:official_homeservers}
 The Matrix organization has two official homeservers, Synapse\cite{matrix_org_synapse} and Dendrite\cite{matrix_org_dendrite}.
+
 Homeservers perform the bulk of the work in the Matrix network.
 They are the only component in the Matrix standard that needs to change in order to implement \ac{P2P} networking\cite{fosdem_event_p2p_matrix}.
 
@@ -147,36 +151,19 @@ It is considered stable and feature-complete with regard to the specification.
 It is hosted at \github{matrix-org/synapse}.
 
 \subsubsection{Synapse Code}
-Synapse is written in Python 3.
-Python is a dynamically typed language, designed to be run by an interpreter.
-This has performance implications:
-\begin{itemize}
-      \item{
-            \textbf{Program Memory}:
-            The entire program and is stored in the heap.
-            Allocating memory on the heap is more expensive than the stack, and requires garbage collection.
-            }
-      \item{
-            \textbf{Latency vs.~Throughput}:
-            \ac{AOT} compilers perform heavy optimizations on code in the compilation step.
-            These optimizations are more difficult to make during interpretation, as the interpreter has to compromise between latency and throughput.
-            In other words, the more optimization the interpreter performs, the longer it takes the program to start.
-            }
-      \item{
-            \textbf{The Power of Types}:
-            Strongly typed languages provide more metadata than their weakly typed counterparts, which compilers can use for powerful optimizations.
-            Refactoring strongly typed programs is also safer, as the interfaces for the functions are more clearly defined, allowing tooling to assist the programmer to a greater degree.
-            }
-\end{itemize}
+Synapse is written in Python 3\footnote{As explained by the installation guide: \url{https://github.com/matrix-org/synapse/blob/master/INSTALL.md}}.
+Python is an interpreted language, which has negative performance implications.
+However, some of the backing libraries of Synapse are implemented using C, which does not require the Python interpreter.
+Synapse is packaged as a Python module, and can be installed and run via Python.
 
 \subsection{Dendrite}
-Because of the performance and scalability issues that Synapse faces, it is not the base for future experimentation such as \ac{P2P} infrastructure.
-Instead, the bulk of that work goes on in the Dendrite implementation.
-It is hosted at \github{matrix-org/dendrite}.
+Because of the performance and scalability issues that Synapse faces, the Matrix team started the development of a next-generation homeserver known as Dendrite, written in Go.
+Peer-to-peer networking is provided by libp2p, which was chosen due to pre-existing implementations in Go and JavaScript.
+Dendrite is hosted at \github{matrix-org/dendrite}.
 
 \begin{figure}
       \centering
-      \resizebox{0.5\linewidth}{!}{\input{graphics/dendrite_design.tex}}
+      \resizebox{!}{!}{\input{graphics/dendrite_design.tex}}
       \caption{
             The homeserver can be separated into two main components: \textit{writers} and \textit{readers}.
             Writers respond to API requests by appending to the event log.
@@ -206,14 +193,12 @@ The \texttt{p2p} branch has a pure Go implementation of \ac{P2P}, but does not s
 In order to use the latest developments for \ac{P2P} Matrix, the \texttt{p2p} branch must be merged with \texttt{master}.
 
 \subsubsection{Libp2p}
-Dendrite uses \ac{P2P} libraries provided by Libp2p, which is a collection of protocols, libraries and implementations for peer-to-peer networking\cite{libp2p}.
-The JavaScript implementation is capable of peer discovery across the internet using a protocol known as the WebSocket Star protocol, the source code is at \github{libp2p/js-libp2p-websocket-star}.
-Unfortunately, this protocol is not supported in Go\footnote{
-      \url{libp2p.io/implementations} under libp2p-webrtc-star, see Go column.
-}.
-The Go implementation is still capable of peer discovery on a local network, however, which is sufficient for testing.
+Dendrite uses \ac{P2P} libraries provided by libp2p, which is a collection of protocols, libraries and implementations for peer-to-peer networking\cite{libp2p}.
+The JavaScript implementation is capable of peer discovery across the internet using a protocol known as the \ac{WSS} protocol, the source code is at \github{libp2p/js-libp2p-websocket-star}.
+Unfortunately, this protocol is not supported in Go\footnote{See \textit{Go} column under libp2p-webrtc-star: \url{libp2p.io/implementations}}.
+Instead, the Go implementation supports peer discovery on the local network using \ac{mDNS}.
 
-\subsection{Gomobile}
+\subsection{Gomobile}\label{sec:gomobile}
 Gomobile is a Go program which extends the Go compiler by providing commands for generating Android and iOS apps and libraries\cite{gomobile}.
 Generating an app with Gomobile requires that the entire application stack is written in Go, which includes the user interface and client logic.
 This approach would require a client application to be written in Go.

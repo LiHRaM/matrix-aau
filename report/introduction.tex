@@ -17,17 +17,16 @@ We refer to this problem as \textit{the walled garden problem}.
 
 \begin{figure}
     \centering
-    \resizebox{0.5\linewidth}{!}{\input{graphics/client-server.tex}}
+    \resizebox{!}{!}{\input{graphics/client-server.tex}}
     \caption{
         Typical client-server architecture.
         Client A and Client B communicate via a Server, which is responsible for passing on the messages.
-    }
-    \label{fig:client_server}
+    }\label{fig:client_server}
 \end{figure}
 
 \subsection{Trust}\label{sec:Trust}
 One of the main drawbacks of using a walled garden service is \textit{trust}.
-Client-server architecture places servers as mediators between clients, forcing all communication to go through servers, as illustrated in figure \ref{fig:client_server}.
+Client-server architecture places servers as mediators between clients, forcing all communication to go through servers, as illustrated in figure~\ref{fig:client_server}.
 A common feature of communications servers is that the entirety of messages be available for an indefinite period of time.
 Platforms which follow this architecture for messaging therefore store the messages of all participants.
 For closed-source vendors, it is intractable to know whether the messages passed are done so securely and privately.
@@ -48,14 +47,14 @@ who harvested information on millions of people through a security flaw in the F
 This raises two issues, namely \textit{cost} and \textit{privacy}.
 
 \section{Matrix}
-The Matrix standard is a potential solution to the \textit{walled garden problem}, and is described as an "open standard for interoperable, decentralised, real-time communication over IP"\cite{matrix_org}.
-On the choice of the name Matrix, the Matrix organization states: "We are called Matrix because we provide a structure in which all communication can be matrixed together."\cite{matrix_org_faq}
+The Matrix standard is a potential solution to the \textit{walled garden problem}, and is described as an `open standard for interoperable, decentralised, real-time communication over IP`\cite{matrix_org}.
+On the choice of the name Matrix, the Matrix organization states: `We are called Matrix because we provide a structure in which all communication can be matrixed together.`\cite{matrix_org_faq}
 
 \begin{figure}
     \centering
-    \resizebox{0.5\linewidth}{!}{
+    \resizebox{!}{!}{
         Matrix = \bordermatrix{
-            ~      & Work & Friends & Family & Hobbies\cr
+            \~      & Work & Friends & Family & Hobbies\cr
             Msg       & 1 & 1 & 1 & 1\cr
             Voice     & 1 & 1 & 1 & 1\cr
             Video     & 1 & 1 & 1 & 1\cr
@@ -63,13 +62,14 @@ On the choice of the name Matrix, the Matrix organization states: "We are called
             Bridges   & 1 & 1 & 1 & 1\cr
         }
     }
-    \caption{Matrix provides the fundamental structure for matrixing together all communication.}
-    \label{fig:matrixing_together}
+    \caption{
+        Matrix provides the fundamental structure for matrixing together all communication.
+    }\label{fig:matrixing_together}
 \end{figure}
 
 The Matrix open standard\cite{matrix_org_spec} is a specification for a network of independent servers which may communicate.
 It supports recent features, such as live messaging, calls, and video conferencing.
-Figure \ref{fig:matrix_structure} demonstrates how two users might be connected via the Matrix protocol.
+Figure~\ref{fig:matrix_structure} demonstrates how two users might be connected via the Matrix protocol.
 There are two servers: \textit{matrix.a.com}, and \textit{matrix.b.com}.
 The users are \textit{@a:a.com}, and \textit{@b:b.com}.
 A message from \textit{@a:a.com} would pass through both of the servers before \textit{@b:b.com} would receive them.
@@ -80,13 +80,12 @@ For more casual use cases, the network of servers provides redundancy, as messag
 
 \begin{figure}
     \centering
-    \resizebox{0.5\linewidth}{!}{\input{graphics/matrix.tex}}
+    \resizebox{!}{!}{\input{graphics/matrix.tex}}
     \caption{
         Matrix allows users to communicate across servers.
         Using federation, each server keeps an updated copy of metadata created by its clients.
         People are encouraged to run their own Matrix servers, for increased privacy and performance.
-    }
-    \label{fig:matrix_structure}
+    }\label{fig:matrix_structure}
 \end{figure}
 
 The standard has been implemented by several clients\cite{matrix_org_clients}.
@@ -97,7 +96,7 @@ The standard was declared stable and released as 1.0 on June 10th, 2019\cite{mat
 Its limitations become apparent as one considers its applications, such as \ac{P2P} Matrix.
 
 \subsection{Peer-to-Peer Networks}
-In contrast to the client-server model described in section \ref{sec:Trust}, a peer-to-peer network allows nodes to connect directly to each other.
+In contrast to the client-server model described in section~\ref{sec:Trust}, a peer-to-peer network allows nodes to connect directly to each other.
 There is no central authority, and all nodes as such have equal privilege and functionality.
 Nodes are apty named peers.
 This model is beneficial in terms of cost, as it relies on the collective computing power of its peers instead of a dedicated service.

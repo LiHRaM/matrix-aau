@@ -1,24 +1,161 @@
 \chapter{Design and Implementation}
 This chapter consists of a series of dilemmas, which are used to describe the process for design and implementation.
 Each dilemma is a self-contained unit, and includes \textit{motivation}, \textit{approach} and \textit{resolution}.
+Together these dilemmas constitute the design and implementation which is done while reflecting on the problem statement.
 
 \section{Dilemma 1: New or Old}
 Conceptually, the minimal requirements for peer-to-peer Matrix on Android are simple.
-We require a client and a server running on the device in order to work, where the server supports \ac{P2P}.
-Both need to support the hardware of the Android device.
+In addition to running a Matrix client on the device, we also need a homeserver that supports \ac{P2P}.
+The choice of both client and homeserver is where it becomes difficult.
 Sections \ref{sec:official_homeservers} and \ref{sec:official_clients} describe the official homeservers and clients.
 On the one hand, there are Synapse and Riot for Android, which are more feature complete and stable.
 On the other hand, there are Dendrite and RiotX for Android, which are built using modern standards and technology, but are less feature complete.
 
+\subsection{Homeserver: Dendrite}
+Synapse is a strong contender for the choice of homeserver.
+It is stable, feature complete and written in Python, which is supported by a large swathe of platforms and architectures.
+However, Synapse does not support \ac{P2P} networking, and is therefore not a viable choice at this time.
+Instead, we choose Dendrite as the homeserver, as it already supports \ac{P2P} networking.
+In order to get Dendrite running on mobile, we need to solve the following technical challenges:
+\begin{enumerate}
+    \item{
+          \textbf{Embedded Database Support}:
+          As mentioned in the analysis, Dendrite supports peer-to-peer networking via WebAssembly and pure Go.
+          While the WebAssembly version is present in mainline development, the pure Go version diverged before the implementation of SQLite support.
+          Mainline Dendrite supports both PostgreSQL and SQLite.
+          While SQLite is well supported on the Android platform, PostgreSQL is not.
+          Therefore, we need to bring the pure Go implementation of P2P Dendrite back into the mainline.
+          }
+    \item{
+          \textbf{Compiling Dendrite for Android}:
+          Peer-to-peer Dendrite in pure Go and embedded database support can be compiled for Android via tools such as \texttt{go bind}.
+          }
+    \item{
+          \textbf{Running Dendrite on Android}:
+          On Android, long-running tasks such as a homeserver are typically run as a services\footnote{Service: \url{https://developer.android.com/reference/kotlin/android/app/Service}} in its own thread.
+          In this regard, Dendrite should provide an interface with which it can be called as a service from any given client.
+          As the homeserver is a web server which runs over HTTP on a given port, we also need to ensure that the chosen port does not conflict with other active applications or services.
+          }
+\end{enumerate}
 
-% Section \ref{sec:synapse_vs_dendrite} describes the benefits of Dendrite over Synapse for mobile clients.
-% In order to get Dendrite working on mobile, we need to merge the \github{matrix-org/dendrite/p2p} branch with the master branch, which supports embedded databases.
-% Android has excellent support for SQLite in apps, which is the data backing the Dendrite installation, and stores data such as account information and message metadata.
 
-% \section{Embedding Dendrite}
-% We begin by preparing Dendrite for embedding.
-% The \texttt{p2p} branch already supports \ac{P2P} messaging, but lacks support for embedded database technology.
-% We merge this branch with master and refactor it for use within Android by creating a \texttt{server} Go package.
+\subsubsection{Embedded Database Support}
+As Dendrite is an active open source project, we were able to submit a pull request to the repository to synchronize the pure Go P2P Dendrite with the mainline development.
+In concrete terms, this pull request merges the \github{matrix-org/dendrite/p2p} branch with \texttt{master}.
+The pull request is documented at \github{matrix-org/dendrite/956}.
+
+The pull request also introduces a new binary, \texttt{dendrite-demo-libp2p}, which can be run as a standalone peer-to-peer server.
+The binary takes two optional input parameters: \textit{name} and \textit{port}, which are used to avoid collision on the same host.
+For example, in order to spawn two separate servers on the same computer for testing purposes, one could write:
+
+\begin{lstfloat}
+    \begin{lstlisting}[
+        caption={
+            Running multiple instances of \texttt{dendrite-demo-libp2p} for testing purposes.
+            The flags passed are used to avoid collision.
+            The binary creates several SQLite databases using the name parameter.
+        }
+    ]
+# This command is run in one terminal
+$ ./dendrite-demo-libp2p -port 8080 -name nr1
+
+# This command is run in another terminal
+$ ./dendrite-demo-libp2p -port 8081 -name nr2
+\end{lstlisting}
+\end{lstfloat}
+
+
+
+\subsubsection{Compiling Dendrite for Android}
+Dendrite is written in the Go programming language, which supports a variety of operating systems, including Android and iOS.
+The Gomobile program described in section \ref{sec:gomobile} compiles binaries and libraries for Android, and also generates Android code via Java which enables native Android applications to reference the interface directly.
+We refactor the \texttt{dendrite-demo-libp2p} binary, such that the entrypoint references the same interface that an Android application would use.
+The new entrypoint for the binary is shown in listing \ref{lst:dendrite_demo_libp2p}.
+
+\begin{lstfloat}
+    \begin{lstlisting}[
+        language=Go,
+        label={lst:dendrite_demo_libp2p},
+        caption={
+        The main function is the entrypoint for the \texttt{dendrite-demo-libp2p} binary.
+        It parses flags and passes them on to the Init function in listing \ref{lst:dendrite_init}.
+        }
+    ]
+// main.go
+func main() {
+    instanceName := flag.String(/* not included */)
+    instancePort := flag.Int(/* not included */)
+    flag.Parse()
+    server.Init(".", *instanceName, *instancePort)
+}
+\end{lstlisting}
+\end{lstfloat}
+
+Gomobile can be used to bind the underlying library, which has the interface as shown in listing \ref{lst:dendrite_init}.
+This command generates an \textbf{A}ndroid \textbf{Ar}chive \texttt{(.aar)} file\footnote{Android Archives and their use are described at \url{https://developer.android.com/studio/projects/android-library}}, which includes the compiled Go code and Java bindings.
+
+\begin{lstfloat}
+    \begin{lstlisting}[
+  language=Go,
+  label={lst:dendrite_init},
+  caption={
+    The Init function spawns a Dendrite server as a monolith.
+    The monolith creates SQLite databases in the directory specified by \texttt{path}.
+    The other two parameters are used to avoid namespace and port clashing.
+    This is necessary for spawning more than one instance on the same host.
+}]
+// server.go
+func Init(
+    path string,
+    instanceName string,
+    instancePort int) {/* not included */}
+\end{lstlisting}
+\end{lstfloat}
+
+\subsection{Client: Riot for Android}
+The choice between Riot and RiotX can be reduced to a choice between expediency and investment.
+RiotX is the next generation official client, which in practical terms means that development will not continue for the older Riot in the near future.
+It does not currently support Dendrite, as it depends on versions of the client-server API which Dendrite does not implement.
+Choosing RiotX would therefore require up-front investment in Dendrite development, which is not necessary if the older Riot is chosen.
+
+As described in section \ref{sec:official_clients}, the Matrix client does not need modification in order to support P2P networking, as the client-server protocol does not change.
+But in order to work correctly on Android, the homeserver should run as a service for the client.
+This way, the operating system knows to associate the client and homeserver, and to prioritize homeserver work when the client app is open.
+
+\subsubsection{Running Dendrite on Android}
+Given the use of Dendrite and Riot for Android, the problem becomes concrete: start Dendrite as a service from Riot for Android.
+In order to do this, we to reference Dendrite from the Riot project.
+This reference provides the \texttt{init} method from listing \ref{lst:dendrite_init}, which we use to start the Dendrite server.
+If we were to simply call the \texttt{Init} function, it would block the application indefinitely.
+We need to start a separate thread instead, so that Dendrite and Riot can run at the same time.
+See listing \ref{lst:dendrite_task} for the implementation.
+
+\begin{lstfloat}
+    \begin{lstlisting}[
+        language=Java,
+        label={lst:dendrite_task},
+        caption={
+            Starting Dendrite in a separate thread.
+            The first argument states that Dendrite runs from the directory assigned to the application.
+            The second argument states the name of the server, and the third assigns it a port.
+        }
+    ]
+// VectorApp.java, onCreate method
+Runnable dendrite_task = () -> Server.init(
+    getFilesDir().getPath(),
+    "dendrite-server",
+    8080 // TODO: Assign port in a conflict-free manner
+);
+
+new Thread(dendrite_task).start();
+\end{lstlisting}
+\end{lstfloat}
+
+Riot already contains a service for message synchronization.
+It would make sense to spawn the Dendrite server on a thread for that service, to ensure that the two always run simultaneously.
+The Dendrite server could in fact be considered a synchronization service extension, as it synchronizes state with other servers.
+
+
 
 % \subsection{Dendrite Commands}
 % The commands available in the Dendrite repository are listed in listing \ref{fig:dendrite-cmd-tree}.
@@ -94,23 +231,7 @@ On the other hand, there are Dendrite and RiotX for Android, which are built usi
 % \subsection{Android Library}
 % The Go library has a single entrypoint as seen in listing \ref{lst:dendrite_init}.
 % From the Go library, the Gomobile command generates an Android Archive (.aar) file which can be referenced via Android Studio.
-% \begin{lstfloat}
-%   \begin{lstlisting}[
-%   language=Go, 
-%   label={lst:dendrite_init}, 
-%   caption={
-%     The Init function spawns a Dendrite server as a monolith.
-%     The monolith creates SQLite databases in the directory specified by \texttt{path}.
-%     The other two parameters are used to avoid namespace and port clashing.
-%     This is necessary for spawning more than one instance on the same host.
-% }]
-% // server.go
-% func Init(
-%     path string, 
-%     instanceName string, 
-%     instancePort int) {}
-% \end{lstlisting}
-% \end{lstfloat}
+
 
 % \subsection{Changing Riot and RiotX}
 % \begin{lstfloat}
@@ -120,7 +241,7 @@ On the other hand, there are Dendrite and RiotX for Android, which are built usi
 % thread(start = true) {
 %     Dendrite.init(
 %         filesDir.path,
-%         "dendrite-server", 
+%         "dendrite-server",
 %         8080)
 % }
 % \end{lstlisting}
