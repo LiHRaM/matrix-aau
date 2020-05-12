@@ -4,8 +4,4 @@
 
 [submodule "riot-android"]
 	path = riot-android
-	url = git@github.com/LiHRaM/riot-android.git
-
-[submodule "riot-android/server"]
-	path = "riot-android/server"
-	url = git@github.com/LiHRaM/server.git
+	url = git@github.com:LiHRaM/riot-android.git
