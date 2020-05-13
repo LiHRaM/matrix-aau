@@ -223,19 +223,15 @@ According to the initial problem, we have the following requirements for a homes
 With regard to these requirements, Dendrite is clearly the right choice, due to the following reasons:
 \begin{itemize}
       \item{
-            \textbf{\ac{P2P} Support}
+            \textbf{\ac{P2P} Support}:
             The Matrix team is already experimenting with \ac{P2P} support in Dendrite.
             The repository contains at least two separate implementations of \ac{P2P}, one in JavaScript and one in Go\cite{fosdem_event_p2p_matrix}.
             }
       \item{
-            \textbf{Gomobile}
+            \textbf{Gomobile}:
             The Go language team supports mobile applications in Go via Gomobile\cite{gomobile}.
             Gomobile can generate pure Go apps, or library bindings for pre-existing apps.
             Using Gomobile, Dendrite can be ported to mobile as a library in the client app, effectively embedding the server in the mobile client.
-            }
-      \item{
-            \textbf{Efficiency}
-            Due to \ac{AOT} compilation alone, Go is better suited for mobile development than Python.
             }
 \end{itemize}
 
