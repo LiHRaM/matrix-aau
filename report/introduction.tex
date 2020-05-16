@@ -16,12 +16,12 @@ They are forced to rely on external vendors for the storage and security of thei
 We refer to this problem as \textit{the walled garden problem}.
 
 \begin{figure}
-    \centering
-    \resizebox{!}{!}{\input{graphics/client-server.tex}}
-    \caption{
-        Typical client-server architecture.
-        Client A and Client B communicate via a Server, which is responsible for passing on the messages.
-    }\label{fig:client_server}
+	\centering
+	\resizebox{!}{!}{\input{graphics/client-server.tex}}
+	\caption{
+		Typical client-server architecture.
+		Client A and Client B communicate via a Server, which is responsible for passing on the messages.
+	}\label{fig:client_server}
 \end{figure}
 
 \subsection{Trust}\label{sec:Trust}
@@ -51,20 +51,20 @@ The Matrix standard is a potential solution to the \textit{walled garden problem
 On the choice of the name Matrix, the Matrix organization states: `We are called Matrix because we provide a structure in which all communication can be matrixed together.`\cite{matrix_org_faq}
 
 \begin{figure}
-    \centering
-    \resizebox{!}{!}{
-        Matrix = \bordermatrix{
-            \~      & Work & Friends & Family & Hobbies\cr
-            Msg       & 1 & 1 & 1 & 1\cr
-            Voice     & 1 & 1 & 1 & 1\cr
-            Video     & 1 & 1 & 1 & 1\cr
-            Bots      & 1 & 1 & 1 & 1\cr
-            Bridges   & 1 & 1 & 1 & 1\cr
-        }
-    }
-    \caption{
-        Matrix provides the fundamental structure for matrixing together all communication.
-    }\label{fig:matrixing_together}
+	\centering
+	\resizebox{!}{!}{
+		Matrix = \bordermatrix{
+			\~      & Work & Friends & Family & Hobbies\cr
+			Msg       & 1 & 1 & 1 & 1\cr
+			Voice     & 1 & 1 & 1 & 1\cr
+			Video     & 1 & 1 & 1 & 1\cr
+			Bots      & 1 & 1 & 1 & 1\cr
+			Bridges   & 1 & 1 & 1 & 1\cr
+		}
+	}
+	\caption{
+		Matrix provides the fundamental structure for matrixing together all communication.
+	}\label{fig:matrixing_together}
 \end{figure}
 
 The Matrix open standard\cite{matrix_org_spec} is a specification for a network of independent servers which may communicate.
@@ -79,13 +79,13 @@ For the most extreme privacy concerns, a user might simply host a private server
 For more casual use cases, the network of servers provides redundancy, as messages are copied by each participating homeserver.
 
 \begin{figure}
-    \centering
-    \resizebox{!}{!}{\input{graphics/matrix.tex}}
-    \caption{
-        Matrix allows users to communicate across servers.
-        Using federation, each server keeps an updated copy of metadata created by its clients.
-        People are encouraged to run their own Matrix servers, for increased privacy and performance.
-    }\label{fig:matrix_structure}
+	\centering
+	\resizebox{!}{!}{\input{graphics/matrix.tex}}
+	\caption{
+		Matrix allows users to communicate across servers.
+		Using federation, each server keeps an updated copy of metadata created by its clients.
+		People are encouraged to run their own Matrix servers, for increased privacy and performance.
+	}\label{fig:matrix_structure}
 \end{figure}
 
 The standard has been implemented by several clients\cite{matrix_org_clients}.
@@ -96,7 +96,7 @@ The standard was declared stable and released as 1.0 on June 10th, 2019\cite{mat
 Its limitations become apparent as one considers its applications, such as \ac{P2P} Matrix.
 
 \subsection{Peer-to-Peer Networks}
-In contrast to the client-server model described in section~\ref{sec:Trust}, a peer-to-peer network allows nodes to connect directly to each other.
+In contrast to the client-server model described in Section~\ref{sec:Trust}, a peer-to-peer network allows nodes to connect directly to each other.
 There is no central authority, and all nodes as such have equal privilege and functionality.
 Nodes are apty named peers.
 This model is beneficial in terms of cost, as it relies on the collective computing power of its peers instead of a dedicated service.
@@ -108,18 +108,18 @@ The Matrix team is working on Dendrite\cite{matrix_org_dendrite}, an experimenta
 This approach overcomes some of the drawbacks of the current implementation of Matrix, which requires each user to be registered with a homeserver with a \ac{DNS} entry and a static IP address.
 This requirement causes several issues:
 \begin{itemize}
-    \item{
-          \textbf{Domain Knowledge}:
-          Server management requires technical knowledge.
-          }
-    \item{
-          \textbf{Cost}:
-          Some solutions require less knowledge, but can be expensive.
-          }
-    \item{
-          \textbf{Inflexibility}:
-          A server cannot be migrated between \ac{DNS} entries, i.e.~it cannot change names.
-          }
+	\item{
+	      \textbf{Domain Knowledge}:
+	      Server management requires technical knowledge.
+	      }
+	\item{
+	      \textbf{Cost}:
+	      Some solutions require less knowledge, but can be expensive.
+	      }
+	\item{
+	      \textbf{Inflexibility}:
+	      A server cannot be migrated between \ac{DNS} entries, i.e.~it cannot change names.
+	      }
 \end{itemize}
 Instead, \ac{P2P} Matrix runs homeservers on-device.
 This solution does not have to cost money, and does not require knowledge of server management.
@@ -134,9 +134,9 @@ Due to the popularity and widespread use of mobile phones, experimentation with 
 
 The benefits of having an on-device homeserver for a telephone would have strong benefits for users, such as:
 \begin{itemize}
-    \item Full control of data,
-    \item No registration necessary, and
-    \item Increased privacy.
+	\item Full control of data,
+	\item No registration necessary, and
+	\item Increased privacy.
 \end{itemize}
 
 \noindent
@@ -144,6 +144,6 @@ Modern mobile devices have software which monitors the battery use of applicatio
 To accomodate this limitation, considerations must be in the use of processors, memory and other resources.
 
 \begin{center}
-    We propose the following initial problem: \textit{What can we do to get peer-to-peer Matrix on the smartphone, while respecting the constraints of mobile phones, such as battery life and memory usage?}
+	We propose the following initial problem: \textit{What can we do to get peer-to-peer Matrix on the smartphone, while respecting the constraints of mobile phones, such as battery life and memory usage?}
 \end{center}
 
