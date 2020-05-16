@@ -1,1 +1,7 @@
 master.pdf
+*.synctex.gz
+*.blg
+*.toc
+*.log
+*.aux
+*.bbl
