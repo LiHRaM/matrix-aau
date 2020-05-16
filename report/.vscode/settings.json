@@ -1,0 +1,20 @@
+{
+    // Settings for TeXLab (efoerster.texlab)
+    // See `tectonic --help` for the format
+    "latex.build.executable": "tectonic",
+    "latex.build.args": [
+        // Input
+        "%f",
+        // Flags
+        "--synctex",
+        "--keep-logs",
+        "--keep-intermediates",
+        // Options
+        // OPTIONAL: If you want a custom out directory,
+        // uncomment the following line.
+        //"--outdir out",
+    ],
+    // OPTIONAL: The extension needs to be configured 
+    // to read the logs from the out directory as well.
+    // "latex.build.outputDirectory": "out",
+}
