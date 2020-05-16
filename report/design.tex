@@ -4,13 +4,41 @@ The dilemma motivates a choice of technologies which impacts the design.
 Finally, we conclude the chapter by providing the final design overview.
 
 \section{Constraints}
-\todo{Describe what we can and can't do, e.g.~we can't change the Matrix protocol too much, can we?}
+The design of the system happens within the context of several larger systems.
+\begin{itemize}
+	\item{
+	      \textbf{The Matrix Standard}:
+	      The most fundamental constraint is the Matrix standard.
+	      Both the client and the server are designed with the Matrix procotols in mind.
+	      The goal of this project is not to modify these protocols, but rather to see whether an extension of it is viable.
+	      }
+	\item{
+	      \textbf{Homeserver Architecture}:
+	      The homeservers are designed to implement the Matrix protocol, but do so differently.
+	      The Synapse approach is to provide a large self-contained unit, whereas Dendrite provides these services in a more composable way.
+	      Either way, these are large projects which at the very least require a good understanding of both the Matrix protocol and the design of the components which we modify or extend.
+	      }
+	\item{
+	      \textbf{Android Architecture}:
+	      Both Riot and RiotX are built for the Android operating system.
+	      The Google developer documentation for Android has guidelines for how an Android application should be developed.
+	      This includes specific design principles and the Android \ac{SDK}, which provides a way for the application to interact with the operating system.
+	      }
+\end{itemize}
 
-% \paragraph{New vs.~Old}
-% The first two dilemmas are a result of working in open source communities.
-% The code used in this project is constantly updated and refactored by contributors.
-% Additionally, there is an effort to move development from Synapse and Riot to Dendrite and RiotX, and described in sections~\ref{sec:official_clients} and~\ref{sec:official_homeservers}.
-% We therefore consider the advantages and disadvantages of choosing the new or the old in terms of homeserver and client.
+Figure~\ref{fig:design_constraints} illustrates the layering of these constraints.
+The focus of our design is to ensure that these components interact correctly under new circumstances, i.e.~as a single application containing both the client and the server.
+For example, we do not intend to modify the Client-Server communication.
+
+\begin{figure}
+	\centering
+	\resizebox{!}{!}{\input{graphics/design-constraints.tex}}
+	\caption{%
+		The three layers of constraints with which we work.
+		The Matrix Standard is fundamental to the design, followed by the homeserver architecture and lastly the android ecosystem.
+	}%
+	\label{fig:design_constraints}
+\end{figure}
 
 \section{Dilemma: Stable versus Bleeding Edge}
 The first dilemma consists of choosing a homeserver and a client to work with.
@@ -86,7 +114,29 @@ Choosing RiotX would therefore require work to bring Dendrite up to those versio
 We choose Dendrite as the embedded homeserver, based on the criteria listed in Table~\ref{tab:homeserver_comparison}, and Riot for Android as the client, as RiotX does not at this time support Dendrite as an embedded homeserver.
 
 \section{Design Overview}
+We design the combination of Dendrite and Riot into a single Android App, as illustrated in Figure~\ref{fig:p2p-embed}.
+The flow of the design is as follows:
 
-\todo{High-level overview}
-\todo{More detailed selected components}
-\todo{Complete design of my additions}
+As Riot launches, it initializes the Dendrite server in a separate thread.
+This allows Riot and Dendrite to run at the same time.
+When Dendrite runs for the first time, it creates databases for message metadata, user data, and security keys.
+Once it is done, it notifies Riot through a synchronization mechanism, and begins listening for incoming requests from the client and other servers.
+Meanwhile, Riot waits for the address before it can continue.
+Once it receives the address, it saves it and launches normally.
+This design is illustrated in Figure~\ref{fig:design_overview}.
+
+\begin{figure}
+	\centering
+	\resizebox{0.5\linewidth}{!}{\input{graphics/design-overview.tex}}
+	\caption{%
+		The overall design of the modified Android application Riot, which spawns Dendrite once it starts.
+	}%
+	\label{fig:design_constraints}
+\end{figure}
+
+Once the user has been registered on the embedded Dendrite server, Riot stores the address of Dendrite along with the registration information.
+Typically this makes sense, because the Matrix Standard assumes that server addresses do not change.
+In our case, however, this does not apply.
+Riot therefore only uses the address provided by Dendrite after initialization.
+
+

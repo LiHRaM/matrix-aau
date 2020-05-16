@@ -1,45 +1,6 @@
-\chapter{Design and Implementation}
-This chapter consists of a series of dilemmas, which are used to describe the process for design and implementation.
-Each dilemma is a self-contained unit, and includes \textit{motivation}, \textit{approach} and \textit{resolution}.
-Together these dilemmas constitute the design and implementation which is done while reflecting on the problem statement.
+\chapter{Implementation}
 
-\section{Dilemma 1: New or Old}
-Conceptually, the minimal requirements for peer-to-peer Matrix on Android are simple.
-In addition to running a Matrix client on the device, we also need a homeserver that supports \ac{P2P}.
-The choice of both client and homeserver is where it becomes difficult.
-Sections \ref{sec:official_homeservers} and \ref{sec:official_clients} describe the official homeservers and clients.
-On the one hand, there are Synapse and Riot for Android, which are more feature complete and stable.
-On the other hand, there are Dendrite and RiotX for Android, which are built using modern standards and technology, but are less feature complete.
-
-\subsection{Homeserver: Dendrite}
-Synapse is a strong contender for the choice of homeserver.
-It is stable, feature complete and written in Python, which is supported by a large swathe of platforms and architectures.
-However, Synapse does not support \ac{P2P} networking, and is therefore not a viable choice at this time.
-Instead, we choose Dendrite as the homeserver, as it already supports \ac{P2P} networking.
-In order to get Dendrite running on mobile, we need to solve the following technical challenges:
-\begin{enumerate}
-    \item{
-          \textbf{Embedded Database Support}:
-          As mentioned in the analysis, Dendrite supports peer-to-peer networking via WebAssembly and pure Go.
-          While the WebAssembly version is present in mainline development, the pure Go version diverged before the implementation of SQLite support.
-          Mainline Dendrite supports both PostgreSQL and SQLite.
-          While SQLite is well supported on the Android platform, PostgreSQL is not.
-          Therefore, we need to bring the pure Go implementation of P2P Dendrite back into the mainline.
-          }
-    \item{
-          \textbf{Compiling Dendrite for Android}:
-          Peer-to-peer Dendrite in pure Go and embedded database support can be compiled for Android via tools such as \texttt{go bind}.
-          }
-    \item{
-          \textbf{Running Dendrite on Android}:
-          On Android, long-running tasks such as a homeserver are typically run as a services\footnote{Service: \url{https://developer.android.com/reference/kotlin/android/app/Service}} in its own thread.
-          In this regard, Dendrite should provide an interface with which it can be called as a service from any given client.
-          As the homeserver is a web server which runs over HTTP on a given port, we also need to ensure that the chosen port does not conflict with other active applications or services.
-          }
-\end{enumerate}
-
-
-\subsubsection{Embedded Database Support}
+\section{Embedded Database Support}
 As Dendrite is an active open source project, we were able to submit a pull request to the repository to synchronize the pure Go P2P Dendrite with the mainline development.
 In concrete terms, this pull request merges the \github{matrix-org/dendrite/p2p} branch with \texttt{master}.
 The pull request is documented at \github{matrix-org/dendrite/956}.
@@ -49,7 +10,7 @@ The binary takes two optional input parameters: \textit{name} and \textit{port},
 For example, in order to spawn two separate servers on the same computer for testing purposes, one could write:
 
 \begin{lstfloat}
-    \begin{lstlisting}[
+	\begin{lstlisting}[
         caption={
             Running multiple instances of \texttt{dendrite-demo-libp2p} for testing purposes.
             The flags passed are used to avoid collision.
@@ -64,38 +25,17 @@ $ ./dendrite-demo-libp2p -port 8081 -name nr2
 \end{lstlisting}
 \end{lstfloat}
 
-
-
-\subsubsection{Compiling Dendrite for Android}
-Dendrite is written in the Go programming language, which supports a variety of operating systems, including Android and iOS.
-The Gomobile program described in section \ref{sec:gomobile} compiles binaries and libraries for Android, and also generates Android code via Java which enables native Android applications to reference the interface directly.
-We refactor the \texttt{dendrite-demo-libp2p} binary, such that the entrypoint references the same interface that an Android application would use.
-The new entrypoint for the binary is shown in listing \ref{lst:dendrite_demo_libp2p}.
-
-\begin{lstfloat}
-    \begin{lstlisting}[
-        language=Go,
-        label={lst:dendrite_demo_libp2p},
-        caption={
-        The main function is the entrypoint for the \texttt{dendrite-demo-libp2p} binary.
-        It parses flags and passes them on to the Init function in listing \ref{lst:dendrite_init}.
-        }
-    ]
-// main.go
-func main() {
-    instanceName := flag.String(/* not included */)
-    instancePort := flag.Int(/* not included */)
-    flag.Parse()
-    server.Init(".", *instanceName, *instancePort)
-}
-\end{lstlisting}
-\end{lstfloat}
-
-Gomobile can be used to bind the underlying library, which has the interface as shown in listing \ref{lst:dendrite_init}.
-This command generates an \textbf{A}ndroid \textbf{Ar}chive \texttt{(.aar)} file\footnote{Android Archives and their use are described at \url{https://developer.android.com/studio/projects/android-library}}, which includes the compiled Go code and Java bindings.
+\section{Compiling Dendrite for Android}
+Dendrite is written in the Go programming language, which supports a variety of operating systems, including Android and~iOS\@.
+The Gomobile program described in Section~\ref{sec:gomobile} compiles binaries and libraries for Android, and also generates Android code via Java which enables native Android applications to reference the interface directly.
+We refactor the \texttt{dendrite-demo-libp2p} binary into a library stored at \github{LiHRaM/server} which can be compiled by Gradle\footnote{https://gradle.org}, the build system used by RiotX and Riot.
+The library exports a single function, \texttt{Init}, with the signature seen in Listing~\ref{lst:dendrite_init}.
+Init starts an instance of a Dendrite server, which means that it runs indefinitely.
+In order to pass information from Dendrite to the calling Java library, we add a \texttt{Callback} interface, which can be implemented on the Java side.
+Listing~\ref{lst:vector_callback} shows the callback we implement on the Java side.
 
 \begin{lstfloat}
-    \begin{lstlisting}[
+	\begin{lstlisting}[
   language=Go,
   label={lst:dendrite_init},
   caption={
@@ -104,50 +44,160 @@ This command generates an \textbf{A}ndroid \textbf{Ar}chive \texttt{(.aar)} file
     The other two parameters are used to avoid namespace and port clashing.
     This is necessary for spawning more than one instance on the same host.
 }]
-// server.go
+// Callback provides the the caller a way to respond to the port being set.
+type Callback interface {
+	SetPort(int)
+}
+
+// Init starts the Dendrite server in p2p mode
 func Init(
-    path string,
-    instanceName string,
-    instancePort int) {/* not included */}
+    path string, 
+    instanceName string, 
+    instancePort int, 
+    callback Callback) {/* not included */}
 \end{lstlisting}
 \end{lstfloat}
 
-\subsection{Client: Riot for Android}
-The choice between Riot and RiotX can be reduced to a choice between expediency and investment.
-RiotX is the next generation official client, which in practical terms means that development will not continue for the older Riot in the near future.
-It does not currently support Dendrite, as it depends on versions of the client-server API which Dendrite does not implement.
-Choosing RiotX would therefore require up-front investment in Dendrite development, which is not necessary if the older Riot is chosen.
-
-As described in section \ref{sec:official_clients}, the Matrix client does not need modification in order to support P2P networking, as the client-server protocol does not change.
-But in order to work correctly on Android, the homeserver should run as a service for the client.
-This way, the operating system knows to associate the client and homeserver, and to prioritize homeserver work when the client app is open.
-
-\subsubsection{Running Dendrite on Android}
-Given the use of Dendrite and Riot for Android, the problem becomes concrete: start Dendrite as a service from Riot for Android.
-In order to do this, we to reference Dendrite from the Riot project.
-This reference provides the \texttt{init} method from listing \ref{lst:dendrite_init}, which we use to start the Dendrite server.
-If we were to simply call the \texttt{Init} function, it would block the application indefinitely.
-We need to start a separate thread instead, so that Dendrite and Riot can run at the same time.
-See listing \ref{lst:dendrite_task} for the implementation.
 
 \begin{lstfloat}
-    \begin{lstlisting}[
-        language=Java,
-        label={lst:dendrite_task},
-        caption={
-            Starting Dendrite in a separate thread.
-            The first argument states that Dendrite runs from the directory assigned to the application.
-            The second argument states the name of the server, and the third assigns it a port.
-        }
-    ]
-// VectorApp.java, onCreate method
-Runnable dendrite_task = () -> Server.init(
-    getFilesDir().getPath(),
-    "dendrite-server",
-    0
-);
+	\begin{lstlisting}[
+    language=Java,
+    label={lst:vector_callback},
+    caption={
+        The \texttt{Init} function expects an object which implements the \texttt{Callback} interface.
+    }
+]
+private static class PortActivatedCallback implements Callback {
+    private long mDendritePort = 0;
 
-new Thread(dendrite_task).start();
+    long getPort() {
+        this.blockOnPort();
+        return mDendritePort;
+    }
+
+    private void blockOnPort() {
+        while (mDendritePort == 0) {
+
+        }
+
+        Log.d(LOG_TAG, "Port accessed :" + mDendritePort);
+    }
+
+    @Override
+    public void setPort(long l) {
+        mDendritePort = l;
+    }
+}
 \end{lstlisting}
 \end{lstfloat}
 
+Gomobile can be used to bind the underlying library, which has the interface as shown in Listing~\ref{lst:dendrite_init}.
+This command generates an \textbf{A}ndroid \textbf{Ar}chive \texttt{(.aar)} file\footnote{Android Archives and their use are described at \url{https://developer.android.com/studio/projects/android-library}}, which includes the compiled Go code and Java bindings.
+
+\section{Running Dendrite on Android}
+We modify Riot such that it can run its own Dendrite server.
+First, we modify the entrypoint for the Android application, \texttt{VectorApp}.
+The entrypoint is called every time the application launches, which allows us to ensure that an instance of Dendrite is running.
+Specifically, we introduce our changes into the \texttt{onCreate} method.
+In Listing~\ref{lst:vectorapp}, we list the changes made to this entrypoint.
+
+The Android developer documentation suggests the use of dynamic ports for running services, since the package authors cannot assume that a given port is free.
+The documentation suggests the use of an API in order to get the next available port.
+Unfortunately, this API returns a raw \texttt{WebSocket} instead of the number of the port, which we cannot pass to the Dendrite library, since Gomobile only supports simple types.
+Therefore, we intentionally pass \texttt{0} as a parameter for the port assigned to Dendrite.
+The Dendrite library looks for the next available port and passes it to the \texttt{Callback} object, which the Java side stores and uses to connect to the homeserver.
+
+\begin{lstfloat}
+	\begin{lstlisting}[
+        language=Java,
+        label={lst:vectorapp},
+        caption={
+            VectorApp is the main entry point of the Android application.
+            \texttt{onCreate} is called every time the app is started.
+        }
+    ]
+// The modified VectorApp in VectorApp.java
+public class VectorApp extends MultiDexApplication {
+    /* PortActivatedCallBack definition */
+
+    private Uri mDendriteUrl;
+
+    public Uri getDendriteUrl() {
+        return mDendriteUrl;
+    }
+
+    @Override
+    public void onCreate() {
+        /* not included */
+        PortActivatedCallback cb = new PortActivatedCallback();
+        Runnable dendriteTask = () -> Server.init(
+                getFilesDir().getPath(),
+                "dendrite-server",
+                0,
+                cb
+        );
+        new Thread(dendriteTask).start();
+        mDendriteUrl = Uri.parse("http://localhost:" + cb.getPort());
+        /* not included */
+    }
+}
+\end{lstlisting}
+\end{lstfloat}
+
+We update the registration process so that the default homeserver is the one created by the Riot application during the \texttt{onCreate} event.
+This is done in \texttt{LoginActivity.java}, which handles both registration and login.
+There, as seen in Listing~\ref{lst:login_activity}, we rewrite the \texttt{getHomeServerUrl} to return the value stored by \texttt{VectorApp}.
+
+\begin{lstfloat}
+	\begin{lstlisting}[
+    language=Java,
+    label={lst:login_activity},
+    caption={
+        A method which we modify in \texttt{LoginActivity.java} to return the custom homeserver url generated in \texttt{VectorApp}.
+    }
+]
+private String getHomeServerUrl() {
+    return VectorApp.getInstance().getDendriteUrl().toString();
+}
+\end{lstlisting}
+\end{lstfloat}
+
+Typically, when a user registers with a Matrix server, the \ac{URL} does not change.
+The client therefore stores the homeserver \ac{URL} along with the user information.
+We add logic which updates the homeserver \ac{URL} whenever the user information is fetched, as seen in Listing~\ref{lst:matrix_java}.
+This prevents the client from trying to connect to the wrong port.
+
+\begin{lstfloat}
+	\begin{lstlisting}[
+    language=Java,
+    label={lst:matrix_java},
+    caption={
+        \texttt{Matrix.java} contains a Singleton class which controls access to the Matrix SDK along with session management.
+        We modify \texttt{getDefaultSession} so that it updates the homeserver \ac{URL} to match the most recent one available.
+    }
+]
+public synchronized MXSession getDefaultSession() {
+    /* not included */
+    for (HomeServerConnectionConfig config : hsConfigList) {
+
+        // Update the port of the homeserver
+        config.setHomeserverUri(
+            VectorApp.getInstance().getDendriteUrl());
+
+        /* not included */
+    }
+}
+\end{lstlisting}
+\end{lstfloat}
+
+% \begin{lstfloat}
+%     \begin{lstlisting}[
+%     language=Java,
+%     label={lst:label},
+%     caption={
+%         Lorem ipsum.
+%     }
+% ]
+% // Code...
+% \end{lstlisting}
+% \end{lstfloat}
