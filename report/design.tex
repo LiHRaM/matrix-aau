@@ -1,0 +1,92 @@
+\chapter{Design}
+This chapter consists of an initial section describing the constraints of the design, followed by a dilemma, and concluding with a design overview.
+The dilemma motivates a choice of technologies which impacts the design.
+Finally, we conclude the chapter by providing the final design overview.
+
+\section{Constraints}
+\todo{Describe what we can and can't do, e.g.~we can't change the Matrix protocol too much, can we?}
+
+% \paragraph{New vs.~Old}
+% The first two dilemmas are a result of working in open source communities.
+% The code used in this project is constantly updated and refactored by contributors.
+% Additionally, there is an effort to move development from Synapse and Riot to Dendrite and RiotX, and described in sections~\ref{sec:official_clients} and~\ref{sec:official_homeservers}.
+% We therefore consider the advantages and disadvantages of choosing the new or the old in terms of homeserver and client.
+
+\section{Dilemma: Stable versus Bleeding Edge}
+The first dilemma consists of choosing a homeserver and a client to work with.
+We must consider the advantages and disadvantages of both the older, more stable Synapse and Riot versus the newer Dendrite and RiotX.
+There are many other clients and homeservers which we could consider as well, many of which are listed on the Matrix website.
+However, as described in the analysis, these alternatives are not officially supported and are therefore risky choices.
+
+\subsection{Approach}
+We begin by considering the two homeservers described in Section~\ref{sec:official_homeservers}.
+Afterwards we repeat the procedure for the two clients described in Section~\ref{sec:official_clients}.
+We estimate the work required for each homeserver to support the minimum requirements for the project, which are:
+\begin{itemize}
+	\item{
+	      \textbf{Peer-to-Peer}:
+	      The server must be able to participate in a peer-to-peer network, by peer discovery and signaling its presence.
+	      }
+	\item{
+	      \textbf{Android Packaging}:
+	      Riot and RiotX use the Gradle\footnote{https://gradle.org} build system, which transforms source program into an Android application.
+	      We therefore need a method to integrate the homeserver in this build system in order to package it with the application.
+	      This also allows the clients to start and stop the servers as necessary.
+	      }
+\end{itemize}
+
+Table~\ref{tab:homeserver_comparison} describes the result of this comparison, which we now describe in further detail.
+
+\begin{table}[t]
+	\center{}
+	\begin{tabular}{lcc}
+		\textbf{Server} & \multicolumn{1}{l}{\textbf{Peer-to-Peer}} & \multicolumn{1}{l}{\textbf{Android Packaging}} \\ \toprule
+		Synapse         & No                                        & No                                             \\
+		Dendrite        & Yes                                       & Yes
+	\end{tabular}
+	\caption{An overview of the fitness of the two homeservers for use as embedded servers.}\label{tab:homeserver_comparison}
+\end{table}
+
+\subsubsection{Synapse}
+Synapse is a natural choice for many projects which need a Matrix homeserver.
+It is the official, recommended homeserver for personal and commercial use, and is thoroughly tested.
+It is the reference implementation, and is stable and feature complete.
+On the other hand, it does not support either peer-to-peer networking or Android packaging.
+If we were to choose Synapse, we would have to implement all the peer-to-peer logic which is already implemented in Dendrite.
+Additionally, as there are no Python implementations of libp2p, Synapse would have to use a different set of libraries.
+One could also choose to invest in libp2p for Python and implement those libraries as well, but that would require an even greater amount of work.
+In terms of Android packaging, there are no official solutions for Python, but there is an unofficial solution known as BeeWare\footnotemark.
+\footnotetext{https://beeware.org}
+Unfortunately, as its documentation states\footnotemark, the build tools are incompatible with the latest changes in the Android ecosystem.
+\footnotetext{https://docs.beeware.org/en/latest/tutorial/tutorial-5/index.html}
+In summary, it would be a major effort to use Synapse as the embedded homeserver at this time.
+
+\subsubsection{Dendrite}
+Dendrite is not recommended for serious use yet.
+It lacks the stability and features that Synapse has.
+For example, it only supports Client-Server API up to version v0.3.0, whereas the latest stable is v0.6.0.
+It is actively being changed, and is overall a very new project compared to the older and more stable Synapse.
+However, through the \texttt{gomobile} project, it can be packaged for Android, and there is already a version which contains a peer-to-peer implementation.
+Therefore, although Dendrite lacks the stability and completeness of Synapse, it would require much less work to function as an embedded, peer-to-peer homeserver than Synapse would.
+
+\subsubsection{Riot}
+Riot for Android is conceptually similar to Synapse, in the sense that it is an older, more stable and mature application than its newer alternative.
+It supports both Synapse and Dendrite.
+However, it is not under active development anymore, as described in Section~\ref{sec:official_clients}.
+Instead, they point new contributors to RiotX instead, which is now the main focus for Android development.
+
+\subsubsection{RiotX}
+RiotX is similar to Dendrite, in that it is the official next generation client.
+Currently, it is in beta stage, and does not support all the features that Riot does.
+Notably, it does not support older versions of the Client-Server API, requiring versions v0.5.0 and v0.6.0.
+This makes it incompatible with Dendrite at this time.
+Choosing RiotX would therefore require work to bring Dendrite up to those versions.
+
+\subsection{Resolution}
+We choose Dendrite as the embedded homeserver, based on the criteria listed in Table~\ref{tab:homeserver_comparison}, and Riot for Android as the client, as RiotX does not at this time support Dendrite as an embedded homeserver.
+
+\section{Design Overview}
+
+\todo{High-level overview}
+\todo{More detailed selected components}
+\todo{Complete design of my additions}
