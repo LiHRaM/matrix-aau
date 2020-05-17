@@ -1,4 +1,4 @@
-\chapter{Design}
+\chapter{Design}\label{chp:design}
 This chapter consists of an initial section describing the constraints of the design, followed by a dilemma, and concluding with a design overview.
 The dilemma motivates a choice of technologies which impacts the design.
 Finally, we conclude the chapter by providing the final design overview.
@@ -65,15 +65,19 @@ We estimate the work required for each homeserver to support the minimum require
 
 Table~\ref{tab:homeserver_comparison} describes the result of this comparison, which we now describe in further detail.
 
-\begin{table}[t]
+\begin{table}
 	\center{}
-	\begin{tabular}{lcc}
-		\textbf{Server} & \multicolumn{1}{l}{\textbf{Peer-to-Peer}} & \multicolumn{1}{l}{\textbf{Android Packaging}} \\ \toprule
-		Synapse         & No                                        & No                                             \\
-		Dendrite        & Yes                                       & Yes
+	\begin{tabular}{lccc}
+		\textbf{Server} & \multicolumn{1}{l}{\textbf{Peer-to-Peer}} & \multicolumn{1}{l}{\textbf{Android Packaging}} & \multicolumn{1}{l}{\textbf{Embedded Database Support}} \\ \toprule
+		Synapse         & No                                        & No                                             & Yes                                                    \\
+		Dendrite        & Yes                                       & Yes                                            & Yes\footnotemark\
 	\end{tabular}
 	\caption{An overview of the fitness of the two homeservers for use as embedded servers.}\label{tab:homeserver_comparison}
 \end{table}
+\footnotetext{
+	The version of Dendrite with peer-to-peer networking uses an older version of Dendrite which does not support embedded databases.
+	The latest Dendrite does support embedded databases, however.
+}
 
 \subsubsection{Synapse}
 Synapse is a natural choice for many projects which need a Matrix homeserver.
@@ -87,7 +91,7 @@ In terms of Android packaging, there are no official solutions for Python, but t
 \footnotetext{https://beeware.org}
 Unfortunately, as its documentation states\footnotemark, the build tools are incompatible with the latest changes in the Android ecosystem.
 \footnotetext{https://docs.beeware.org/en/latest/tutorial/tutorial-5/index.html}
-In summary, it would be a major effort to use Synapse as the embedded homeserver at this time.
+It would be a major effort to use Synapse as the embedded homeserver at this time.
 
 \subsubsection{Dendrite}
 Dendrite is not recommended for serious use yet.
@@ -95,7 +99,9 @@ It lacks the stability and features that Synapse has.
 For example, it only supports Client-Server API up to version v0.3.0, whereas the latest stable is v0.6.0.
 It is actively being changed, and is overall a very new project compared to the older and more stable Synapse.
 However, through the \texttt{gomobile} project, it can be packaged for Android, and there is already a version which contains a peer-to-peer implementation.
-Therefore, although Dendrite lacks the stability and completeness of Synapse, it would require much less work to function as an embedded, peer-to-peer homeserver than Synapse would.
+Peer-to-peer Dendrite does not support Android completely though, as it uses an older version of Dendrite, which does not support embedded databases yet.
+This is necessary to store the message metadata in the app that Dendrite needs.
+In summary, Dendrite has two of the required features, but requires updating in order to obtain the third.
 
 \subsubsection{Riot}
 Riot for Android is conceptually similar to Synapse, in the sense that it is an older, more stable and mature application than its newer alternative.
@@ -131,7 +137,7 @@ This design is illustrated in Figure~\ref{fig:design_overview}.
 	\caption{%
 		The overall design of the modified Android application Riot, which spawns Dendrite once it starts.
 	}%
-	\label{fig:design_constraints}
+	\label{fig:design_overview}
 \end{figure}
 
 Once the user has been registered on the embedded Dendrite server, Riot stores the address of Dendrite along with the registration information.
