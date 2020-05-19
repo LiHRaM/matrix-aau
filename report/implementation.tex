@@ -1,48 +1,82 @@
-\chapter{Implementation}
+\chapter{Implementation}\label{chp:implementation}
+This chapter documents the work done to implement the design illustrated in Figure~\ref{fig:design_overview}.
+We begin by preparing Dendrite to run on Android in peer-to-peer mode.
+Afterwards, we configure Riot to compile Dendrite as a part of the project.
+Finally, we modify Riot to run Dendrite as it starts.
 
-\section{Embedded Database Support}
-As Dendrite is an active open source project, we were able to submit a pull request to the repository to synchronize the pure Go P2P Dendrite with the mainline development.
-In concrete terms, this pull request merges the \github{matrix-org/dendrite/p2p} branch with \texttt{master}.
-The pull request is documented at \github{matrix-org/dendrite/956}.
+\section{Preparing Dendrite for Android}
+The first task is to prepare Dendrite for Android by adding support in the peer-to-peer version for embedded databases.
+Embedded databases are a very convenient method for storing persistent data in Android, where the preferred method is to use the app's file directory for persistent data\footnotemark, because applications are isolated from the rest of the system.
+\footnotetext{%
+	More information about Android data persistence at\\
+	\url{https://developer.android.com/training/data-storage/} and\\
+	\url{https://developer.android.com/topic/security/best-practices\#internal-storage}.
+}%
 
-The pull request also introduces a new binary, \texttt{dendrite-demo-libp2p}, which can be run as a standalone peer-to-peer server.
-The binary takes two optional input parameters: \textit{name} and \textit{port}, which are used to avoid collision on the same host.
-For example, in order to spawn two separate servers on the same computer for testing purposes, one could write:
-
-\begin{lstfloat}
-	\begin{lstlisting}[
-        caption={
-            Running multiple instances of \texttt{dendrite-demo-libp2p} for testing purposes.
-            The flags passed are used to avoid collision.
-            The binary creates several SQLite databases using the name parameter.
-        }
-    ]
-# This command is run in one terminal
-$ ./dendrite-demo-libp2p -port 8080 -name nr1
-
-# This command is run in another terminal
-$ ./dendrite-demo-libp2p -port 8081 -name nr2
-\end{lstlisting}
-\end{lstfloat}
+As shown in Table~\ref{tab:homeserver_comparison}, Dendrite does support embedded databases, but on a different version.
+We approach this task by collaborating with the authors of the Dendrite project on merging the work which supports embedded databases with the work which supports peer-to-peer networking.
+The work is documented in \github{matrix-org/dendrite/956}, and consists of the following steps:
+\begin{enumerate}
+	\item{
+	      \textbf{Extracting Peer-to-Peer Networking}:
+	      The original peer-to-peer version was an experiment which injected peer-to-peer logic into the main Dendrite libraries.
+	      Instead, the code was refactored so that the peer-to-peer logic was in its own library, and could be composed with the main libraries into a decentralized application.
+	      }
+	\item{
+	      \textbf{Creating a Demo Program}:
+	      The Dendrite code repository consists of a collection of libraries, and \textit{commands}.
+	      The commands are example programs which use the libraries to start parts of Dendrite in different configurations.
+	      We add a command, \texttt{dendrite-demo-libp2p}, which set up and configured Dendrite to run in peer-to-peer mode.
+	      }
+\end{enumerate}
+In concrete terms, this work merges the \github{matrix-org/dendrite/p2p} branch with \texttt{matrix\-org/dendrite/master}.
 
 \section{Compiling Dendrite for Android}
+The next step is to make sure that Dendrite can run on Android.
 Dendrite is written in the Go programming language, which supports a variety of operating systems, including Android and~iOS\@.
-The Gomobile program described in Section~\ref{sec:gomobile} compiles binaries and libraries for Android, and also generates Android code via Java which enables native Android applications to reference the interface directly.
-We refactor the \texttt{dendrite-demo-libp2p} binary into a library stored at \github{LiHRaM/server} which can be compiled by Gradle\footnote{https://gradle.org}, the build system used by RiotX and Riot.
-The library exports a single function, \texttt{Init}, with the signature seen in Listing~\ref{lst:dendrite_init}.
-Init starts an instance of a Dendrite server, which means that it runs indefinitely.
-In order to pass information from Dendrite to the calling Java library, we add a \texttt{Callback} interface, which can be implemented on the Java side.
+The Gomobile program described in Section~\ref{sec:gomobile} compiles binaries and libraries for Android.
+It also generates Android code via Java, which enables native Android applications to reference the interface directly.
+To make this convenient, we create a new project at \github{LiHRaM/server}, which is a restructured version of the \texttt{dendrite-demo-libp2p} command.
+The main difference is that the code is cleanly separated into a single library, \texttt{server}, and an optional command in a subfolder for testing.
+We illustrate the structure of this project in Figure~\ref{fig:dirtree_server}.
+The \texttt{server} library exports a single function, \texttt{Init}, with the signature seen in Listing~\ref{lst:dendrite_init}.
+Init handles the logic for setting up for and starting a Dendrite server.
+As shown in Figure~\ref{fig:design_overview}, Riot and Dendrite must synchronize before Riot can finish setting up.
+We implement this by providing a \texttt{Callback} interface, which can be implemented on the Java side, and passed to the \texttt{Init} function.
+When the \texttt{Init} function has found a suitable port, it calls \texttt{SetPort} on the interface object, which allows the client to store the port for later use.
 Listing~\ref{lst:vector_callback} shows the callback we implement on the Java side.
+
+\begin{figure}
+	\dirtree{%
+		.1 server/.
+		.2 server.go.
+		.2 p2pdendrite.go.
+		.2 mdnslistener.go.
+		.2 build.gradle.
+		.2 Makefile.
+		.2 server.aar.
+		.2 main/.
+		.2 storage/.
+	}
+	\caption{%
+		The \github{LiHRaM/server} directory tree, with selected files.
+		This directory is a part of the Android project, which references it through \texttt{build.gradle}.
+		The \texttt{Makefile} includes a script which generates \texttt{server.aar}, which is included by the build file.
+	}%
+	\label{fig:dirtree_server}
+\end{figure}
 
 \begin{lstfloat}
 	\begin{lstlisting}[
   language=Go,
   label={lst:dendrite_init},
   caption={
-    The Init function spawns a Dendrite server as a monolith.
-    The monolith creates SQLite databases in the directory specified by \texttt{path}.
-    The other two parameters are used to avoid namespace and port clashing.
-    This is necessary for spawning more than one instance on the same host.
+    The Init function spawns a Dendrite server.
+    The server creates SQLite databases in the directory specified by \texttt{path}.
+    \texttt{instanceName} is used as a prefix for the database files that the server creates.
+    \texttt{instancePort} can be used to specify a port.
+    If it the port is set as \texttt{0}, the port is automatically determined at runtime.
+    \texttt{callback} is used to synchronize with the client.
 }]
 // Callback provides the the caller a way to respond to the port being set.
 type Callback interface {
@@ -64,7 +98,10 @@ func Init(
     language=Java,
     label={lst:vector_callback},
     caption={
-        The \texttt{Init} function expects an object which implements the \texttt{Callback} interface.
+        \texttt{PortActivatedCallback} is a Java class which implements the interface defined in the Go \texttt{server} project.
+        The method \texttt{getPort} returns the port on which the Dendrite server runs.
+        To make sure that it returns the correct port, we use a primitive spinlock, by looping until the inner \texttt{mDendritePort} is no longer \texttt{0}.
+        If this function were to be called without passing the object to the \texttt{Init} method, it would block forever.
     }
 ]
 private static class PortActivatedCallback implements Callback {
@@ -92,20 +129,37 @@ private static class PortActivatedCallback implements Callback {
 \end{lstfloat}
 
 Gomobile can be used to bind the underlying library, which has the interface as shown in Listing~\ref{lst:dendrite_init}.
-This command generates an \textbf{A}ndroid \textbf{Ar}chive \texttt{(.aar)} file\footnote{Android Archives and their use are described at \url{https://developer.android.com/studio/projects/android-library}}, which includes the compiled Go code and Java bindings.
+This command generates an \textbf{A}ndroid \textbf{Ar}chive \texttt{(.aar)} file\footnotemark, which includes the compiled Go code and Java bindings.
+\footnotetext{%
+	Android Archives and their use are described at\\
+	\url{https://developer.android.com/studio/projects/android-library}
+}
 
 \section{Running Dendrite on Android}
-We modify Riot such that it can run its own Dendrite server.
-First, we modify the entrypoint for the Android application, \texttt{VectorApp}.
-The entrypoint is called every time the application launches, which allows us to ensure that an instance of Dendrite is running.
-Specifically, we introduce our changes into the \texttt{onCreate} method.
-In Listing~\ref{lst:vectorapp}, we list the changes made to this entrypoint.
+Finally, we prepare the Android side to connect with and run Dendrite.
+When a user starts the app, there are two main scenarios:
+\begin{enumerate}
+	\item{
+	      \textbf{Registration}:
+	      The user has not registered yet, in which case the user is taken to the registration screen.
+	      }
+	\item{
+	      \textbf{Conversations}:
+	      If the app can find information about a logged in user, it goes straight to the main page, which shows the conversations of the user.
+	      }
+\end{enumerate}
+In the code, each case is handled differently.
+Typically, when a user registers, the user also choos\-es which server they register with.
+This information is registered along with the credentials of the user and stored for later.
+In our case, however, the server is located on the device itself, which changes every time it starts up.
+This means that we must change the server address stored with the credentials whenever they are fetched.
+Otherwise, the user would not be able to access the server again.
 
-The Android developer documentation suggests the use of dynamic ports for running services, since the package authors cannot assume that a given port is free.
-The documentation suggests the use of an API in order to get the next available port.
-Unfortunately, this API returns a raw \texttt{WebSocket} instead of the number of the port, which we cannot pass to the Dendrite library, since Gomobile only supports simple types.
-Therefore, we intentionally pass \texttt{0} as a parameter for the port assigned to Dendrite.
-The Dendrite library looks for the next available port and passes it to the \texttt{Callback} object, which the Java side stores and uses to connect to the homeserver.
+Whenever the app starts up, it runs the code stored in \texttt{VectorApp.java}.
+We modify the \texttt{onCreate} method, so that it starts the Dendrite server.
+When Dendrite is done initializing, it passes the latest port to the client by calling \texttt{setPort}, which is defined in Listing~\ref{lst:vector_callback}.
+Specifically, we introduce our changes into the \texttt{onCreate} method.
+In Listing~\ref{lst:vectorapp}, we show the changes made to this entrypoint.
 
 \begin{lstfloat}
 	\begin{lstlisting}[
@@ -114,6 +168,8 @@ The Dendrite library looks for the next available port and passes it to the \tex
         caption={
             VectorApp is the main entry point of the Android application.
             \texttt{onCreate} is called every time the app is started.
+            It is \textit{not} called when the app is resumed.
+            We store the Dendrite server \ac{URL} in the \texttt{VectorApp} class, and provide the \texttt{getDendriteUrl} getter for external access.
         }
     ]
 // The modified VectorApp in VectorApp.java
@@ -144,36 +200,53 @@ public class VectorApp extends MultiDexApplication {
 \end{lstlisting}
 \end{lstfloat}
 
-We update the registration process so that the default homeserver is the one created by the Riot application during the \texttt{onCreate} event.
-This is done in \texttt{LoginActivity.java}, which handles both registration and login.
-There, as seen in Listing~\ref{lst:login_activity}, we rewrite the \texttt{getHomeServerUrl} to return the value stored by \texttt{VectorApp}.
+The registration process sets \url{https://matrix.org} as the default homeserver on registration.
+We modify this to be the address of the newly created Dendrite server.
+In Listing~\ref{lst:login_activity}, we rewrite the \texttt{getHomeServerUrl} to return the value stored by \texttt{VectorApp}.
+Typically, when a user registers with a Matrix server, the \ac{URL} does not change.
+The client therefore stores the homeserver \ac{URL} along with the user information.
+We add logic which updates the homeserver \ac{URL} whenever the user information is fetched, as seen in Listing~\ref{lst:matrix_java}.
 
 \begin{lstfloat}
 	\begin{lstlisting}[
     language=Java,
     label={lst:login_activity},
     caption={
-        A method which we modify in \texttt{LoginActivity.java} to return the custom homeserver url generated in \texttt{VectorApp}.
+        \texttt{getHomeServerUrl} is called when the user attempts to register.
+        We modify it to only returns the address of the embedded Dendrite server.
+        A convenient consequence is that the code and registration process becomes simpler.
     }
 ]
+// Before
+private String getHomeServerUrl() {
+    String url = ServerUrlsRepository.INSTANCE.getDefaultHomeServerUrl(this);
+
+    if (mUseCustomHomeServersCheckbox.isChecked()) {
+        url = mHomeServerText.getText().toString().trim();
+
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
+    }
+
+    return url;
+}
+
+// After
 private String getHomeServerUrl() {
     return VectorApp.getInstance().getDendriteUrl().toString();
 }
 \end{lstlisting}
 \end{lstfloat}
 
-Typically, when a user registers with a Matrix server, the \ac{URL} does not change.
-The client therefore stores the homeserver \ac{URL} along with the user information.
-We add logic which updates the homeserver \ac{URL} whenever the user information is fetched, as seen in Listing~\ref{lst:matrix_java}.
-This prevents the client from trying to connect to the wrong port.
-
 \begin{lstfloat}
 	\begin{lstlisting}[
     language=Java,
     label={lst:matrix_java},
     caption={
-        \texttt{Matrix.java} contains a Singleton class which controls access to the Matrix SDK along with session management.
-        We modify \texttt{getDefaultSession} so that it updates the homeserver \ac{URL} to match the most recent one available.
+        \texttt{Matrix.java} contains a class which controls access to the Matrix \ac{SDK} along with session management.
+        \texttt{getDefaultSession} is called when a user has already registered with the server.
+        We modify it to update the homeserver \ac{URL} to match the embedded Dendrite server address.
     }
 ]
 public synchronized MXSession getDefaultSession() {
@@ -201,3 +274,27 @@ public synchronized MXSession getDefaultSession() {
 % // Code...
 % \end{lstlisting}
 % \end{lstfloat}
+
+
+\section*{A Note on Battery Impact}
+Android 10 has a powerful energy monitoring feature which tracks the battery use of its apps.
+When an app is particularly harmful to the battery life of the phone, it warns the user with a notification.
+We have received no such notifications from the operating system.
+However, the energy impact could be reduced even further by explicitly pausing Dendrite when the app is paused.
+This would be possible due to two reasons:
+\begin{enumerate}
+	\item{
+	      \textbf{Android Application Lifecycle}:
+	      The \texttt{Application} interface is similar to the \texttt{Callback} interface, in the sense that it allows us to receive information from a separate process.
+	      In this case, the Android operating system can notify us of different events occurring in the app if we implement its \texttt{Application} interface.
+	      Two examples of these events are \texttt{onPause} and \texttt{onResume}, which are called by the operating system when the app is paused and resumed.
+	      We could use these lifecycle events to properly pause and resume the Dendrite server.
+	      }
+	\item{
+	      \textbf{Java \texttt{Thread}s}:
+	      Dendrite is started in its own thread using the Java \texttt{Thread} \ac{API}\@.
+	      Creating a new task creates an object which we can use to suspend and resume the task running on the thread.
+	      }
+\end{enumerate}
+
+These optimizations are useful, but not necessary, as the Android operating system is quite good at suspending tasks on its own.

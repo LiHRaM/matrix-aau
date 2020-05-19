@@ -1,5 +1,5 @@
 DOCUMENTS_DIR?=$(HOME)/Documents
-timestamp := $(shell date +%Y-%m-%d-%H꞉%M)
+timestamp := $(shell date +%Y-%m-%d-H%H-M%M)
 
 master.pdf: *.tex
 	tectonic master.tex

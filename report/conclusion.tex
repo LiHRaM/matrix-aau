@@ -1,1 +1,29 @@
 \chapter{Conclusion}
+
+From our implementation, we determine that the minimum requirements for running peer-to-peer Matrix on Android are \textit{implementing the Matrix client and server \ac{API}s in a single application, where the server \ac{API}s include peer-to-peer networking}.
+Given the current state of the ecosystem, this task is becoming less and less difficult.
+We helped integrate the peer-to-peer version of Dendrite into the master branch, where it will receive updates along with the rest of Dendrite.
+
+However, the solution we created was not complete.
+Notably, the following features were missing:
+\begin{itemize}
+	\item{
+	      \textbf{Federation with Centralized Servers}:
+	      \github{lihram/server} does not support federating with non-P2P Matrix servers.
+	      This prevents strategies such as having a resident homeserver, as mentioned in the discussion.\todo{Mention resident strategy in discussion.}
+	      The main issue with this strategy is that the current Matrix standard requires a DNS entry, which is not tractable for peer-to-peer servers.
+	      }
+	\item{
+	      \textbf{Internet Peer-to-Peer}:
+	      We currently only support peer discovery on the devices' own network.
+	      A complete solution would support discovery in a larger area.
+	      This is a basic requirement which is easily fulfilled by chat applications with a centralized architecture.
+	      }
+	\item{
+	      \textbf{Thin Client-Server API}:
+	      We combined a full Dendrite server with the Riot client.
+	      The Client-Server API is designed to be flexible, but we don't need that flexibility.
+	      Instead of wasting resources on HTTP requests, we could allow the client and server to communicate more directly.
+	      For example, the client and server could be written in the same language, and working with the same data structures in memory.
+	      }
+\end{itemize}
