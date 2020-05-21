@@ -6,12 +6,28 @@ It was written under the supervision of Ivan Aaen.
 \section*{Git}
 \addcontentsline{toc}{section}{\protect\numberline{}Git}
 
-We assume knowledge with git\cite{git}, which is a version control system for code.
-In git, code is grouped into repositories, which are snapshots of files and folders at a certain point in time.
+We assume knowledge with Git\cite{git}, which is a version control system.
+In Git, files are grouped into repositories, which are snapshots of files and folders at a certain point in time.
 These snapshots are also known as commits, and are identified by a hash.
-These commits form the version history of a git repository.
-The reader should be familiar with the basic terminology of git, and understand terms such as a branch, a merge and a pull request.
+The version history of a git repository is a linked list of commits, where each commit points to 0 or more parent commits.
+The first commit has no parents, and normal commits have only one parent each.
 
+\subsection*{Branches}
+Branches allow users to experiment with new features without affecting the main version of the repository.
+Each git repository has at least one branch, which is the main version.
+This branch is typically called the \texttt{master} branch.
+A branch is essentially a named pointer, which points to a commit.
+When the user makes changes and commits them, the pointer of the current branch is moved to point to the latest commit.
+
+\subsection*{Merging}
+When multiple people collaborate on a single repository, branching allows them to make changes separately and combine them when they feel that their changes are complete.
+The combining of branches is normally done through merging.
+Merging creates a new commit, whose parents are the commits being merged.
+
+\subsection*{Pull Requests}
+Pull Requests, also known as Merge Requests, are a way to communicate the intent of merging one branch into another.
+These requests are not built into Git, but rather into online Git management platforms, such as GitHub.
+Pull Requests are typically where work is reviewed, as they provide a way for reviewers to give feedback, annotate code and suggest changes.
 
 \section*{\faGithub~GitHub}
 \addcontentsline{toc}{section}{\protect\numberline{}GitHub}
