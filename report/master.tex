@@ -2,25 +2,32 @@
 \input{preamble/Base.tex}
 \frenchspacing
 \pagenumbering{roman}
-\title{Peer-to-Peer Matrix on Smartphones}
+\title{%
+	Porting Peer-to-Peer Matrix to Android\\
+	\large{%
+		Using of Open Source Software\\
+		to Increase Privacy
+	}
+}
 \author{Hilmar Gústafsson \texttt{<hgusta16@student.aau.dk>}}
-\date{\small\today} % TODO: Set the date when done writing
+\date{\small\today} 			% TODO: Set the date when done writing
 \begin{document}
-\input{hyphenation.tex}
+\sloppy							% Avoids over- and underfull artifacts on the screen
 \maketitle
 \begin{abstract}
 	\ldots
 \end{abstract}
+\setcounter{tocdepth}{1}
 \tableofcontents
 \pagenumbering{arabic}
 \input{preface.tex}
+\input{glossaries.tex}
 \input{introduction.tex}
 \input{analysis.tex}
 \input{design.tex}
 \input{implementation.tex}
 \input{discussion.tex}
 \input{conclusion.tex}
-\input{glossaries.tex}
 \bibliography{references}
 \bibliographystyle{plain}
 \end{document}

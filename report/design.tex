@@ -1,4 +1,4 @@
-\chapter{Design}\label{chp:design}
+\chapter{Design Constraints}\label{chp:design}
 This chapter consists of an initial section describing the constraints of the design, followed by a dilemma, and concluding with a design overview.
 The dilemma motivates a choice of technologies which impacts the design.
 Finally, we conclude the chapter by providing the final design overview.
@@ -9,7 +9,7 @@ The design of the system happens within the context of several larger systems.
 	\item{
 	      \textbf{The Matrix Standard}:
 	      The most fundamental constraint is the Matrix standard.
-	      Both the client and the server are designed with the Matrix procotols in mind.
+	      Both the client and the server are designed with the Matrix protocols in mind.
 	      The goal of this project is not to modify these protocols, but rather to see whether an extension of it is viable.
 	      }
 	\item{
@@ -39,6 +39,8 @@ For example, we do not intend to modify the Client-Server communication.
 	}%
 	\label{fig:design_constraints}
 \end{figure}
+
+\chapter{Design Dilemma and Resolution}\label{chp:design_dilemma}
 
 \section{Dilemma: Stable versus Bleeding Edge}
 The first dilemma consists of choosing a homeserver and a client to work with.
@@ -99,7 +101,7 @@ Dendrite is not recommended for serious use yet.
 It lacks the stability and features that Synapse has.
 For example, it only supports Client-Server API up to version v0.3.0, whereas the latest stable is v0.6.0.
 It is actively being changed, and is overall a very new project compared to the older and more stable Synapse.
-However, through the \texttt{gomobile} project, it can be packaged for Android, and there is already a version which contains a peer-to-peer implementation.
+However, through the \texttt{Gomobile} project, it can be packaged for Android, and there is already a version which contains a peer-to-peer implementation.
 Peer-to-peer Dendrite does not support Android completely though, as it uses an older version of Dendrite, which does not support embedded databases yet.
 This is necessary to store the message metadata in the app that Dendrite needs.
 In summary, Dendrite has two of the required features, but requires updating in order to obtain the third.

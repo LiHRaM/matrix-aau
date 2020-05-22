@@ -1,16 +1,26 @@
-\chapter{Introduction}
+\chapter{The Loss of Privacy}
+Privacy is a diminishing resource.
+Using to social media, we store vast amounts of our personal information on the internet.
+We may not be aware of the ways this data may be used.
+Chat applications store huge amounts of messages which we send every day, using closed protocols we cannot review.
+We allow smart speakers into our homes, capable of recording and transmitting sounds from the privacy of our home to the desks of workers for analysis.
+We wear smart watches and fitness monitors whose data is sent to central servers.
+
+\section{Private Communication}
+We would like to consider how we can regain some of our privacy.
+First, we consider the history of online communication.
 In 1971, the first email was sent\cite{tomlinson2009first}.
-Email is implemented using decentralized protocols for sending simple messages between recipients, specified for example in the \ac{SMTP} \ac{RFC}\cite{RFC5321}.
-One may register with an email provider, and write messages to any other provider implementing the same protocols, as long as they have the recipient's address, known as an email address.
+Email is implemented using decentralized protocols for sending simple messages between recipients\cite{RFC5321}.
+The user can register with an email provider, and write messages to any other provider implementing the same protocols, as long as they have the recipient's address, known as an email address.
 Mobile providers similarly allow people to contact others outside of their network.
 This is an elegant, scalable and privacy-respecting architecture.
 However, there's been a growing trend of \textit{walled gardens}\cite{walled_gardens_gunnar_wolf_acm_2018}, where users' communication is restricted to a single provider, or service.
-Three examples of such services are Slack, WhatsApp and Facebook Messenger, with WhatsApp announcing a userbase exceeding two billion users, and Facebook Messenger 1.3 billion users\cite{walled_gardens_gunnar_wolf_acm_2018,whatsapp_2b_users_archive_org,messenger_1pt3b_users}.
+Three examples of such services are Slack, WhatsApp and Facebook Messenger, with WhatsApp announcing a user base exceeding two billion users, and Facebook Messenger 1.3 billion users\cite{walled_gardens_gunnar_wolf_acm_2018,whatsapp_2b_users_archive_org,messenger_1pt3b_users}.
 
 \section{Initial Problem}\label{subsec:initial_problem_statement}
 Closed-platform services, or walled gardens, are a fragmenting influence on peoples' communication.
 Although these services run over the internet, they are designed in isolation, and do not adhere to an external standard.
-In order to use such a service, a user must acquire a client designed with a private procotol.
+In order to use such a service, a user must acquire a client designed with a private protocol.
 This has the negative effect of people having to keep track of multiple services for the same task, i.e.~communication.
 They are forced to rely on external vendors for the storage and security of their messages.
 We refer to this problem as \textit{the walled garden problem}.
@@ -47,7 +57,7 @@ who harvested information on millions of people through a security flaw in the F
 This raises two issues, namely \textit{cost} and \textit{privacy}.
 
 \section{Matrix}
-The Matrix standard is a potential solution to the \textit{walled garden problem}, and is described as an `open standard for interoperable, decentralised, real-time communication over IP`\cite{matrix_org}.
+The Matrix standard is a potential solution to the \textit{walled garden problem}, and is described as an `open standard for interoperable, decentralized, real-time communication over IP`\cite{matrix_org}.
 On the choice of the name Matrix, the Matrix organization states: `We are called Matrix because we provide a structure in which all communication can be matrixed together.`\cite{matrix_org_faq}
 
 \begin{figure}
@@ -98,7 +108,7 @@ Its limitations become apparent as one considers its applications, such as \ac{P
 \subsection{Peer-to-Peer Networks}
 In contrast to the client-server model described in Section~\ref{sec:Trust}, a peer-to-peer network allows nodes to connect directly to each other.
 There is no central authority, and all nodes as such have equal privilege and functionality.
-Nodes are apty named peers.
+Nodes are named peers.
 This model is beneficial in terms of cost, as it relies on the collective computing power of its peers instead of a dedicated service.
 It also has the potential to increase the privacy of its users, due to its more direct nature.
 
@@ -114,8 +124,7 @@ This requirement causes several issues:
 	      }
 	\item{
 	      \textbf{Cost}:
-	      Some solutions require less knowledge, but can be expensive.
-	      }
+	      Some solutions require less knowledge, but can be expensive     }
 	\item{
 	      \textbf{Inflexibility}:
 	      A server cannot be migrated between \ac{DNS} entries, i.e.~it cannot change names.
@@ -141,7 +150,7 @@ The benefits of having an on-device homeserver for a telephone would have strong
 
 \noindent
 Modern mobile devices have software which monitors the battery use of applications, and warns the user if applications exceed the normal range.
-To accomodate this limitation, considerations must be in the use of processors, memory and other resources.
+To accommodate this limitation, considerations must be in the use of processors, memory and other resources.
 
 \begin{center}
 	We propose the following initial problem: \textit{What can we do to get peer-to-peer Matrix on the smartphone, while respecting the constraints of mobile phones, such as battery life and memory usage?}

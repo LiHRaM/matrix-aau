@@ -14,6 +14,18 @@
         // uncomment the following line.
         //"--outdir out",
     ],
+    "cSpell.words": [
+        "Analytica",
+        "FOSDEM",
+        "Gomobile",
+        "Hodgson",
+        "SDKs",
+        "homeserver",
+        "homeservers",
+        "libp2p",
+        "matrixed",
+        "webrtc"
+    ],
     // OPTIONAL: The extension needs to be configured 
     // to read the logs from the out directory as well.
     // "latex.build.outputDirectory": "out",

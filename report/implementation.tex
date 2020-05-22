@@ -1,4 +1,4 @@
-\chapter{Implementation}\label{chp:implementation}
+\chapter{Porting to Android}\label{chp:implementation}
 This chapter documents the work done to implement the design illustrated in Figure~\ref{fig:design_overview}.
 We begin by preparing Dendrite to run on Android in peer-to-peer mode.
 Afterwards, we configure Riot to compile Dendrite as a part of the project.
@@ -75,7 +75,7 @@ Listing~\ref{lst:vector_callback} shows the callback we implement on the Java si
     The server creates SQLite databases in the directory specified by \texttt{path}.
     \texttt{instanceName} is used as a prefix for the database files that the server creates.
     \texttt{instancePort} can be used to specify a port.
-    If it the port is set as \texttt{0}, the port is automatically determined at runtime.
+    If it the port is set as \texttt{0}, the port is automatically determined at run time.
     \texttt{callback} is used to synchronize with the client.
 }]
 // Callback provides the the caller a way to respond to the port being set.
@@ -100,7 +100,7 @@ func Init(
     caption={
         \texttt{PortActivatedCallback} is a Java class which implements the interface defined in the Go \texttt{server} project.
         The method \texttt{getPort} returns the port on which the Dendrite server runs.
-        To make sure that it returns the correct port, we use a primitive spinlock, by looping until the inner \texttt{mDendritePort} is no longer \texttt{0}.
+        To make sure that it returns the correct port, we use a primitive spin lock, by looping until the inner \texttt{mDendritePort} is no longer \texttt{0}.
         If this function were to be called without passing the object to the \texttt{Init} method, it would block forever.
     }
 ]
@@ -149,7 +149,7 @@ When a user starts the app, there are two main scenarios:
 	      }
 \end{enumerate}
 In the code, each case is handled differently.
-Typically, when a user registers, the user also choos\-es which server they register with.
+Typically, when a user registers, the user also chooses which server they register with.
 This information is registered along with the credentials of the user and stored for later.
 In our case, however, the server is located on the device itself, which changes every time it starts up.
 This means that we must change the server address stored with the credentials whenever they are fetched.
@@ -159,7 +159,7 @@ Whenever the app starts up, it runs the code stored in \texttt{VectorApp.java}.
 We modify the \texttt{onCreate} method, so that it starts the Dendrite server.
 When Dendrite is done initializing, it passes the latest port to the client by calling \texttt{setPort}, which is defined in Listing~\ref{lst:vector_callback}.
 Specifically, we introduce our changes into the \texttt{onCreate} method.
-In Listing~\ref{lst:vectorapp}, we show the changes made to this entrypoint.
+In Listing~\ref{lst:vectorapp}, we show the changes made to this entry point.
 
 \begin{lstfloat}
 	\begin{lstlisting}[
