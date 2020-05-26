@@ -1,9 +1,12 @@
 \chapter{Design Constraints}\label{chp:design}
-This chapter consists of an initial section describing the constraints of the design, followed by a dilemma, and concluding with a design overview.
-The dilemma motivates a choice of technologies which impacts the design.
-Finally, we conclude the chapter by providing the final design overview.
+Because we work with code that already exists, we are placed under several constraints.
+We discuss these constraints and their impact on the design of the application.
 
-\section{Constraints}
+% This chapter consists of an initial section describing the constraints of the design, followed by a dilemma, and concluding with a design overview.
+% The dilemma motivates a choice of technologies which impacts the design.
+% Finally, we conclude the chapter by providing the final design overview.
+
+\section{Constraints}\label{sec:constraints}
 The design of the system happens within the context of several larger systems.
 \begin{itemize}
 	\item{
@@ -40,9 +43,18 @@ For example, we do not intend to modify the Client-Server communication.
 	\label{fig:design_constraints}
 \end{figure}
 
-\chapter{Design Dilemma and Resolution}\label{chp:design_dilemma}
+We also have the constraints described in Section~\ref{sec:mobile_constraints}, \textbf{battery life} and \textbf{storage space}, which we must respect.
+As it stands, the mobile apps for Matrix do not implement the Server-Server \ac{API} defined in the standard.
+Because of this, they are lighter on both storage and battery life.
+We can assume that implementing the Server-Server \ac{API} has at least some negative impact on these constraints.
+Since we do not know which applications we will work with, we defer the concrete goals until those decisions have been made.
 
-\section{Dilemma: Stable versus Bleeding Edge}
+\chapter{Design Dilemma and Resolution}\label{chp:design_dilemma}
+The next step is to decide which implementations of the Matrix standard we use to implement the peer-to-peer Mobile prototype.
+We begin this chapter by discussing the advantages and disadvantages of the official implementations.
+The choice of applications informs the general design of the system, which we describe in the conclusion of the design chapter.
+
+\section{Stable versus Bleeding Edge}
 The first dilemma consists of choosing a homeserver and a client to work with.
 We must consider the advantages and disadvantages of both the older, more stable Synapse and Riot versus the newer Dendrite and RiotX.
 There are many other clients and homeservers which we could consider as well, many of which are listed on the Matrix website.
@@ -134,11 +146,35 @@ Meanwhile, Riot waits for the address before it can continue.
 Once it receives the address, it saves it and launches normally.
 This design is illustrated in Figure~\ref{fig:design_overview}.
 
+% Define block styles
+\tikzstyle{block} = [draw, very thick, text width=7em, text centered, minimum height=4em, fill=blue!20, rectangle, rounded corners]
+\tikzstyle{cloud} = [draw, very thick, text width=4em, text centered, minimum height=4em, fill=red!20, ellipse, node distance=3.5cm]
+\tikzstyle{line}  = [draw, very thick, -latex']
+
 \begin{figure}
 	\centering
-	\resizebox{0.5\linewidth}{!}{\input{graphics/design-overview.tex}}
+	\begin{tikzpicture}[node distance = 2.5cm, auto]
+		% Nodes
+		\node [block] (init) {Initialize Riot};
+		\node [cloud, right of=init] (dendrite) {Dendrite};
+		\node [block, below of=init] (sync) {Synch\-ron\-ize};
+		\node [cloud, right of=sync] (dendrite-1) {Initialize};
+		\node [block, below of=sync] (store) {Store Server Address};
+		\node [cloud, right of=store] (dendrite-2) {Listen};
+		\node [block, below of=store] (cont) {Continue};
+		% Lines
+		\path [line] (init) -- (sync);
+		\path [line] (init) -- (dendrite);
+		\path [line] (dendrite) -- (dendrite-1);
+		\path [line] (dendrite-1) -- (sync);
+		\path [line] (sync) -- (store);
+		\path [line, dashed] (store) -- (cont);
+		\path [line,dashed] (dendrite-1) -- (dendrite-2);
+	\end{tikzpicture}
 	\caption{%
-		The overall design of the modified Android application Riot, which spawns Dendrite once it starts.
+		The overall design of the modified Android application Riot.
+		The rectangles indicate code executed on the Java side, whereas the ellipses indicate code executed on the Go side.
+		The solid lines indicate transitions between deterministic operations, whereas the dashed lines indicate a transition to a continuous state.
 	}%
 	\label{fig:design_overview}
 \end{figure}

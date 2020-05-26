@@ -1,19 +1,38 @@
 \chapter{Conclusion}
+Turning back to the problem statement introduced in Section~\ref{sec:problem_statement}, we now consider how well the project answers the questions therein.
 
-\todo{Reflect the newer problem statement}.
-\todo{Meta text for making it obvious that we're referring to the problem statement.}
-
+\paragraph\ The first question:
+\begin{quote}
+	\textit{What are the minimum requirements for running peer-to-peer Matrix on Android?}
+\end{quote}
 From our implementation, we determine that the minimum requirements for running peer-to-peer Matrix on Android are \textit{implementing the Matrix client and server \ac{API}s in a single application, where the server \ac{API}s include peer-to-peer networking}.
 Given the current state of the ecosystem, this task is becoming less and less difficult.
-We helped integrate the peer-to-peer version of Dendrite into the master branch, where it will receive updates along with the rest of Dendrite.
+As a result of our contribution, an updated mobile-compatible version of Dendrite is now hosted in the main version of Dendrite at \github{matrix-org/dendrite}.
 
-However, the solution we created was not complete.
-Notably, the following features were missing:
+\paragraph\ The second question:
+\begin{quote}
+	\textit{How well does such a solution respect mobile constraints?}
+\end{quote}
+
+We evaluated the solution with regard to two mobile constraints in Chapter~\ref{chp:a_critical_evaluation}.
+\todo{Battery life!}.
+The solution works well with limited storage space given two limitations: The user does not participate in large chat rooms, and limits the use of space intensive media, such as voice snippets, images, video or large files.
+We say \textit{large} chat rooms being well aware that it is a loose term, as the user may act with a relatively large degree of freedom in this matter.
+The larger the rooms the user participates in, the higher the chance that the user runs out of space.
+In Section~\ref{sec:fog_computing}, we suggest an alternative method: fog computing.
+This solution allows similar functionality without sacrificing space, and may improve the energy consumption vs\@. an app that uses a centralized server.
+
+\paragraph\ The third question:
+\begin{quote}
+	\textit{What are the properties of a competitive solution, with regard to walled garden alternatives?}
+\end{quote}
+
+A competitive solution would likely need the following features, which we were not able to implement:
 \begin{itemize}
 	\item{
 	      \textbf{Federation with Centralized Servers}:
-	      \github{LiHRaM/server} does not support federating with non-P2P Matrix servers.
-	      This prevents strategies such as having a resident homeserver, as mentioned in the discussion.\todo{Mention resident strategy in discussion.}
+	      Federating with non-P2P Matrix servers.
+	      This allows strategies such as having a resident homeserver, as mentioned in the discussion.\todo{Mention resident strategy in discussion.}
 	      The main issue with this strategy is that the current Matrix standard requires a DNS entry, which is not tractable for peer-to-peer servers.
 	      }
 	\item{

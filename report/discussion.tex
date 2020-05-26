@@ -1,23 +1,166 @@
-\chapter{A Critical Evaluation}
-\section{Battery Life}
-\section{Storage Space}
+\chapter{A Critical Evaluation}\label{chp:a_critical_evaluation}
+Earlier in the paper, we decided to evaluate the implementation based on two mobile constraints, namely battery life and storage space.
+To do this, we the sections by placing expectations based on the design and implementation.
+Afterwards, we measure the difference using the tools available in the Android platform.
 
-\chapter{Open Source, Complexity and Alternatives}
+\section{Battery Life}\label{sec:battery_life}
+\todo{Write this when the data from Battery Historian is ready.}
 
-\section{Open Source Development}
-\todo{Discuss the advantages and disadvantages of working with open source, such as communication, scheduling work, etc.}
+\subsection{Further Optimizations}
+However, the energy impact could be reduced even further by explicitly pausing Dendrite when the app is paused.
+This would be possible due to two reasons:
+\begin{enumerate}
+	\item{
+	      \textbf{Android Application Lifecycle}:
+	      The \texttt{Application} interface is similar to the \texttt{Callback} interface, in the sense that it allows us to receive information from a separate process.
+	      In this case, the Android operating system can notify us of different events occurring in the app if we implement its \texttt{Application} interface.
+	      Two examples of these events are \texttt{onPause} and \texttt{onResume}, which are called by the operating system when the app is paused and resumed.
+	      We could use these lifecycle events to properly pause and resume the Dendrite server.
+	      }
+	\item{
+	      \textbf{Java \texttt{Thread}s}:
+	      Dendrite is started in its own thread using the Java \texttt{Thread} \ac{API}\@.
+	      Creating a new task creates an object which we can use to suspend and resume the task running on the thread.
+	      }
+\end{enumerate}
 
-\section{Code Complexity}
+These optimizations are useful, but not necessary, as the Android operating system is quite good at suspending tasks on its own.
+
+\section{Storage Space}\label{sec:storage_space}
+The space used by an application is split into three categories:
+\begin{enumerate}
+	\item{
+	      \textbf{App size}:
+		  App size is determined by the space taken by the application itself, which includes Java class files, resource files and a single file which contains compiled resources\cite{android_devdocs_apksize}.
+	      }
+	\item{
+	      \textbf{User data}:
+		  Each Android application has access to a special folder where it can store user data.
+		  User data is meant for more permanent types of data, such as credentials and settings.
+	      }
+	\item{
+	      \textbf{Cache}:
+		  Each Android application is also given a storage mechanism known as the cache.
+		  The cache is meant for temporary data, such as resources, which it can download to avoid excessive network use.
+	      }
+\end{enumerate}
+
+The storage space of the application varies from device to device.
+We use a device with the arm64 architecture, on which Riot for Android has an App size of 78.38MB\@.
+Since the design uses a mostly unmodified Riot with an Embedded Dendrite, we can expect this size to increase.
+Additionally, Dendrite stores information about registered users, rooms, other servers and message metadata.
+The cache and user data are therefore expected to increase significantly as well.
+In the best case scenario, the size increase is only acceptable on more powerful Android devices.
+
+\subsection{Storage Use}\label{sec:storage_use}
+When we compile the Dendrite server for our phone, the generated \texttt{server.aar} artifact has a size of 19.5MB\@.
+The app size is a total of 105MB\@, which is an increase of 34\%, or 26.7MB\@.
+
+This increase may seem conservative, but the main impact of the application occurs in the permanent storage of message metadata on the phone instead of a dedicated server.
+
+Matrix rooms do not have an upper limit on the amount of participants. On a device with less storage space, joining just one of those rooms could fill up the entire device.
+On the other hand, text can be stored in a very compact way compared to media formats, which means that this is not necessarily the case, even for the larger rooms, unless they are media heavy.
+Therefore, the storage space used by the app will be reasonable as long as the user avoids using excessive media and limits the size of chat rooms.
+
+
+\chapter{Open Source, Complexity and Alternatives}\label{chp:open_source_complexity_alternatives}
+This project was intentionally conducted with \ac{OSS}.
+We are concerned with privacy and individual freedom, which we believe \ac{OSS} helps preserve.
+However, there is an established tradition of how one conducts oneself in the \ac{OSS} environment, and the projects in which we participate are large and complex.
+\ac{OSS} naturally leads to sharing and modifications, which may result in alternative implementations of a standard or protocol.
+We wish to discuss how these elements affect our work.
+
+\section{Open Source Software}\label{sec:open_source}
+The term ``Open Source Software'' should be understood as software which is licensed by a license recognized by the \ac{OSI}\cite{open_source_initiative}.
+In a nutshell, these licenses allow the software to be used, modified and redistributed, although the terms for those actions vary.
+As mentioned in the beginning of the chapter, we are strong believers in the principles of open source, and will in this section describe how it has affected the project.
+
+\subsection{Benefits of Open Source}\label{subsec:benefits_of_open_source}
+This project uses code which is completely open source.
+Specifically, the code is located in the following repositories:
+\begin{itemize}
+	\item{
+		\github{LiHRaM/riot-android}:
+		The modified Riot app which runs Dendrite as a peer-to-peer server.
+	}
+	\item{
+		\github{LiHRaM/server}:
+		The Go library which is compiled to \texttt{server.aar} and used in Riot for Android.
+	}
+	\item{
+		\github{matrix-org/dendrite}:
+		We have contributed to the official Dendrite, where our submissions were received as \ac{OSS}.
+	}
+\end{itemize}
+
+The main purpose for storing the code in publicly available repositories is the \textit{free sharing of information}.
+Anyone can learn from the software, is free to use it, and could even improve it.
+Contrast this with closed software, where the impact of discoveries is limited to people who have been given access to the information.
+
+The benefits of free sharing of information could be broken down into the following benefits:
+\begin{itemize}
+	\item{
+		\textbf{Open Collaboration}:
+		Anyone who is willing to contribute to open source may do so, given that they adhere to the terms of the licenses.
+		Due to this, we were able to freely collaborate with the Dendrite developers to experiment with peer-to-peer Matrix.
+	}
+	\item{
+		\textbf{Software Quality}:
+		We have learned much from the software released as \ac{OSS} in this project.
+		We believe that other students and those who wish to learn have a greater chance of becoming quality engineers by reading more quality software.
+	}
+	\item{
+		\textbf{Security}:
+		In order to construct a fully safe product, the author must be able to understand all of its components.
+		By using only open source software, authors can audit each component for security concerns.
+		We have not performed an audit of the components in Matrix, but others have\todo{citations}.
+	}
+\end{itemize}
+
+\subsection{Disadvantages of Open Source}\label{subsec:open_source_disadvantages}
+In our experience, \ac{OSS} development has drawbacks, which are mostly caused by the diversity of collaborators.
+The priorities of the participants in an \ac{OSS} project vary greatly, as do their motivations for contributing to the software.
+Our project is a University experiment, whereas the main Dendrite contributors are paid to contribute.
+We summarize the main drawbacks which we experienced in the following list:
+\begin{itemize}
+	\item{
+		\textbf{Communication}:
+		Asynchronous communication is useful for large, distributed projects, but needs to be carefully moderated.
+		Some of the feedback that we received on our initial contributions felt hostile, for example, which is not helpful, and often harmful.
+	}
+	\item{
+		\textbf{Priorities}:
+		We were lucky that our intent to experiment Peer-to-Peer Matrix happened to be aligned with the Matrix team.
+		However, the Matrix team wished to implement it via the browser, whereas we intended to do it via Mobile.
+		Because of this, we had to do extra work to get the mobile version working, which resulted in a less complete implementation.
+	}
+	\item{
+		\textbf{Activity}:
+		The different software projects we used were at different levels of maintenance, with Riot for Android being mostly abandoned, and Dendrite being very new and active.
+		The non-official implementations were also at varying levels of activity, with some being abandoned, and others not being usable yet.
+	}
+	\item{
+		\textbf{Funding}:
+
+	}
+\end{itemize}
+
+Overall, working with \ac{OSS} was a positive experience in this project.
+When working with open source, we believe it is important to be aware of the risks and drawbacks, and to include them when considering the use of \ac{OSS} in projects.
+
+\section{Code Complexity}\label{sec:code_complexity}
 \todo{%
 	Discuss the process of getting to know a larger code base, and the risks involved.
 	How do you prioritize which things you learn, etc?
 }
 
-\section{Alternative Solutions}
+
+\section{Alternative Solutions}\label{sec:alternative_solutions}
 \todo{Describe the possibility of developing a client and a server which are more thoroughly integrated, for example by skipping the messaging via HTTP.}
 \todo{Describe the potential use of the WebAssembly solution via a something like React Native, etc.}
 \todo{Describe potential alternatives to libp2p.}
 
-\subsection{Fog Computing}
-\todo{See~\cite{hassan2015help}}
-Consider running the Matrix peer-to-peer server for all our mobile devices from home, on our stationary devices.
+\subsection{Fog Computing}\label{sec:fog_computing}
+Since running a modified homeserver on the phone has drawbacks, especially with regard to storage, using fog computing might be a useful alternative.
+In practice, this would mean providing a single homeserver locally for one or more clients, which would handle the storage and Server-Server \ac{API}.
+A paper from 2015 by Hassan et al indicates that this form of computation may be more effective than offloading completely to a central server\cite{hassan2015help}.

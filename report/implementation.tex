@@ -31,6 +31,8 @@ The work is documented in \github{matrix-org/dendrite/956}, and consists of the 
 \end{enumerate}
 In concrete terms, this work merges the \github{matrix-org/dendrite/p2p} branch with \texttt{matrix\-org/dendrite/master}.
 
+\todo{This was a pretty big part of the work, might want to expand a little more on what it meant.}
+
 \section{Compiling Dendrite for Android}
 The next step is to make sure that Dendrite can run on Android.
 Dendrite is written in the Go programming language, which supports a variety of operating systems, including Android and~iOS\@.
@@ -169,7 +171,7 @@ In Listing~\ref{lst:vectorapp}, we show the changes made to this entry point.
             VectorApp is the main entry point of the Android application.
             \texttt{onCreate} is called every time the app is started.
             It is \textit{not} called when the app is resumed.
-            We store the Dendrite server \ac{URL} in the \texttt{VectorApp} class, and provide the \texttt{getDendriteUrl} getter for external access.
+            We store the Dendrite server \ac{URL} in the \texttt{VectorApp} class, and provide the \texttt{getDendriteUrl} get method for external access.
         }
     ]
 // The modified VectorApp in VectorApp.java
@@ -275,26 +277,3 @@ public synchronized MXSession getDefaultSession() {
 % \end{lstlisting}
 % \end{lstfloat}
 
-
-\section*{A Note on Battery Impact}
-Android 10 has a powerful energy monitoring feature which tracks the battery use of its apps.
-When an app is particularly harmful to the battery life of the phone, it warns the user with a notification.
-We have received no such notifications from the operating system.
-However, the energy impact could be reduced even further by explicitly pausing Dendrite when the app is paused.
-This would be possible due to two reasons:
-\begin{enumerate}
-	\item{
-	      \textbf{Android Application Lifecycle}:
-	      The \texttt{Application} interface is similar to the \texttt{Callback} interface, in the sense that it allows us to receive information from a separate process.
-	      In this case, the Android operating system can notify us of different events occurring in the app if we implement its \texttt{Application} interface.
-	      Two examples of these events are \texttt{onPause} and \texttt{onResume}, which are called by the operating system when the app is paused and resumed.
-	      We could use these lifecycle events to properly pause and resume the Dendrite server.
-	      }
-	\item{
-	      \textbf{Java \texttt{Thread}s}:
-	      Dendrite is started in its own thread using the Java \texttt{Thread} \ac{API}\@.
-	      Creating a new task creates an object which we can use to suspend and resume the task running on the thread.
-	      }
-\end{enumerate}
-
-These optimizations are useful, but not necessary, as the Android operating system is quite good at suspending tasks on its own.

@@ -9,9 +9,8 @@ The initial problem statement has several elements, which we deconstruct into th
 	      }
 	\item{
 	      \textbf{Matrix on the Smartphone}:
-	      How does Matrix work?
-	      Is it not currently on the smartphone?
-	      How can it be?
+	      How does Matrix currently work on mobiles?
+	      What effect will introducing peer-to-peer networking have?
 	      }
 	\item{
 	      \textbf{Mobile Constraints}:
@@ -21,11 +20,10 @@ The initial problem statement has several elements, which we deconstruct into th
 \end{itemize}
 
 By exploring the answers to these questions, we inform a more concrete problem statement.
-We begin by analyzing the Matrix Standard, which defines how different components in the Matrix ecosystem interact.
-Afterwards, we evaluate existing solutions, and how well they serve our use case.
 
 \section{Peer-to-Peer Matrix}
-
+To understand how Matrix works, we turn to the Matrix Standard, which defines what is currently possible.
+Afterwards, we consider how it can be extended to include peer-to-peer communication.
 
 \subsection{The Matrix Standard}
 The Matrix standard defines how entities interact in the Matrix network.
@@ -172,8 +170,13 @@ With regard to \ac{P2P} Matrix on mobile devices, there are already open proposa
 From these proposals, it is clear that supporting peer-to-peer networking is on the list of priorities for Matrix.
 
 \section{Matrix on the Smartphone}\label{sec:matrix_on_the_smartphone}
+Introducing Peer-to-Peer Matrix does not necessarily have to have any effect on the current Matrix clients for Android.
+That's because the Matrix Standard treats Client-Server communication and Server-Server communication as separate.
+Mobile clients are only affected by changes in the Client-Server API, whereas the Peer-to-Peer changes occur in the Server-Server API\@.
+That said, it might be beneficial to make changes to the mobile clients.
+We consider the different available homeservers and clients to understand their strengths and differences.
 
-\subsection{Official Homeservers}\label{sec:official_homeservers}
+\subsection{Homeservers}\label{sec:official_homeservers}
 The Matrix organization has two official homeservers, Synapse\cite{matrix_org_synapse} and Dendrite\cite{matrix_org_dendrite}.
 
 Homeservers perform the bulk of the work in the Matrix network.
@@ -192,7 +195,7 @@ Synapse is packaged as a Python module, and can be installed and run via Python.
 
 \subsubsection{Dendrite}\label{sec:dendrite}
 Because of the performance and scalability issues that Synapse faces, the Matrix team started the development of a next-generation homeserver known as Dendrite, written in Go.
-Peer-to-peer networking is provided by libp2p, which was chosen due to pre-existing implementations in Go and JavaScript.
+Peer-to-peer networking is provided by libp2p, which was chosen due to preëxisting implementations in Go and JavaScript.
 Dendrite is hosted at \github{matrix-org/dendrite}.
 
 \begin{figure}
@@ -266,19 +269,22 @@ We begin with an overview of the mainstream constraints of using mobile devices.
 	\item{
 	      \textbf{Battery Life}:
 	      The most fundamental constraint of mobile devices is battery use.
-	      The Android developer documentation describes battery life as `the single most important aspect of the mobile user experience`\cite{android_devdocs_power}.
+	      The Android developer documentation describes battery life as ``the single most important aspect of the mobile user experience''\cite{android_devdocs_power}.
 	      The reasoning is straightforward: if your mobile device has no power, it cannot be used.
 	      They recommend the use of \textit{Battery Historian}\cite{battery_historian} to measure the battery use of applications.
 	      }
 	\item{
 	      \textbf{Storage Space}:
+	      A typical Android device might have somewhere between 16--128GB of memory available, with many older devices in the lower end of that range.
+	      The Android developer documentation recommends trying to keep the memory use of applications low, especially in emerging markets\cite{android_devdocs_apksize}.
 	      A Matrix homeserver might end up storing considerable amounts of data.
 	      Although text formats are compact, the main impact of this metadata would be the storage of media, such as videos, pictures or sound files.
-	      A typical Android device might have somewhere between 16--128GB of memory available, with many older devices in the lower end of that range.
 	      }
 \end{itemize}
 
-\todo{Summarize the bullet points. Consider finding more constraints?}
+We want to evaluate the impact of our changes to preëxisting programs fairly.
+To do this, we establish a baseline of the current battery life impact and storage space use, which we measure the modified program against.
+As a part of the design, we may also set a goal for the impact that our modifications have on the baseline.
 
 \section{Problem Statement}\label{sec:problem_statement}
 
@@ -292,12 +298,6 @@ We begin with an overview of the mainstream constraints of using mobile devices.
 \end{figure}
 From the analysis we have learned that \ac{P2P} Matrix is possible by embedding a homeserver into a client.
 We also learned that we must carefully monitor the use of battery and storage space when developing a mobile application.
-% Dendrite is an existing homeserver with \ac{P2P} implemented, and can be embedded in either Riot for Android or RiotX.
-% We have not built or tested this solution, however, and lack instrumentation to tell us how this can be improved.
-% We have not considered what modifications could be made to the Dendrite homeserver for this specialized use.
-% Examples of such optimization could e.g.~be optimizing for a single user, as the typical homeserver is meant to scale for any number of users.
-% Another optimization might be reducing duplicate work in the client/server architecture, as the client and the server run on the same device.
-% We might want to consider implementing the WSS star protocol in Go, so that the new application supports \ac{P2P} over the internet instead of just the local network.
 
 We propose the following problem statement:\\
 \begin{itemize}

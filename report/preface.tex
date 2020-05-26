@@ -3,23 +3,20 @@
 This student report is a part of the Mobility semester project of the Software Engineering Master's degree program at Aalborg University.
 It was written under the supervision of Ivan Aaen.
 
-
 \listoftodos{}
 
 \chapter*{Concepts}
+\addcontentsline{toc}{chapter}{\protect\numberline{}Concepts}
 
 \section*{Git}
-\addcontentsline{toc}{section}{\protect\numberline{}Git}
-
 We assume knowledge with Git\cite{git}, which is a version control system.
-In Git, files are grouped into repositories, which are snapshots of files and folders at a certain point in time.
+In Git, files are grouped into repositories, which consist of snapshots of files and folders at a certain point in time.
 These snapshots are also known as commits, and are identified by a hash.
-The version history of a git repository is a linked list of commits, where each commit points to 0 or more parent commits.
-The first commit has no parents, and normal commits have only one parent each.
+The terminology used with Git typically compares it to a tree formed by commits.
 
 \subsection*{Branches}
 Branches allow users to experiment with new features without affecting the main version of the repository.
-Each git repository has at least one branch, which is the main version.
+Each Git repository has at least one branch, which is the main version.
 This branch is typically called the \texttt{master} branch.
 A branch is essentially a named pointer, which points to a commit.
 When the user makes changes and commits them, the pointer of the current branch is moved to point to the latest commit.
@@ -35,8 +32,7 @@ These requests are not built into Git, but rather into online Git management pla
 Pull Requests are typically where work is reviewed, as they provide a way for reviewers to give feedback, annotate code and suggest changes.
 
 \section*{\faGithub~GitHub}
-\addcontentsline{toc}{section}{\protect\numberline{}GitHub}
-GitHub is an online environment for managing git repositories.
+GitHub is an online environment for managing Git repositories.
 The code associated with this report is stored on GitHub.
 Referring to repositories, issues, pull requests and branches can become quite repetitive.
 In order to make it easier to write and read these references, we use the following shorthand to refer to GitHub repositories:
