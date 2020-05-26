@@ -1,5 +1,7 @@
-\chapter{Conclusion}
+\chapter{Conclusion and Future Work}
 Turning back to the problem statement introduced in Section~\ref{sec:problem_statement}, we now consider how well the project answers the questions therein.
+
+\section{Back to the Problem Statement}
 
 \paragraph\ The first question:
 \begin{quote}
@@ -7,7 +9,7 @@ Turning back to the problem statement introduced in Section~\ref{sec:problem_sta
 \end{quote}
 From our implementation, we determine that the minimum requirements for running peer-to-peer Matrix on Android are \textit{implementing the Matrix client and server \ac{API}s in a single application, where the server \ac{API}s include peer-to-peer networking}.
 Given the current state of the ecosystem, this task is becoming less and less difficult.
-As a result of our contribution, an updated mobile-compatible version of Dendrite is now hosted in the main version of Dendrite at \github{matrix-org/dendrite}.
+As a result of our contribution described in Section~\ref{sec:preparing_dendrite}, an updated mobile-compatible version of Dendrite is now hosted in the main version of Dendrite at \github{matrix-org/dendrite}.
 
 \paragraph\ The second question:
 \begin{quote}
@@ -27,25 +29,23 @@ This solution allows similar functionality without sacrificing space, and may im
 	\textit{What are the properties of a competitive solution, with regard to walled garden alternatives?}
 \end{quote}
 
-A competitive solution would likely need the following features, which we were not able to implement:
+A competitive solution would likely need the following features, which we did not implement:
 \begin{itemize}
 	\item{
 	      \textbf{Federation with Centralized Servers}:
 	      Federating with non-P2P Matrix servers.
-	      This allows strategies such as having a resident homeserver, as mentioned in the discussion.\todo{Mention resident strategy in discussion.}
 	      The main issue with this strategy is that the current Matrix standard requires a DNS entry, which is not tractable for peer-to-peer servers.
 	      }
 	\item{
 	      \textbf{Internet Peer-to-Peer}:
 	      We currently only support peer discovery on the devices' own network.
-	      A complete solution would support discovery in a larger area.
-	      This is a basic requirement which is easily fulfilled by chat applications with a centralized architecture.
+	      A complete solution would support communication across a larger network, such as the internet.
 	      }
 	\item{
 	      \textbf{Thin Client-Server API}:
-	      We combined a full Dendrite server with the Riot client.
+	      In Section~\ref{subsec:combined_client_server}, we describe an improved design for a combined client and server application.
 	      The Client-Server API is designed to be flexible, but we don't need that flexibility.
-	      Instead of wasting resources on HTTP requests, we could allow the client and server to communicate more directly.
-	      For example, the client and server could be written in the same language, and working with the same data structures in memory.
+	      Instead of spending resources on HTTP requests, we could allow the client and server to communicate more directly.
 	      }
 \end{itemize}
+

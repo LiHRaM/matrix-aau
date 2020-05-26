@@ -1,6 +1,6 @@
 \chapter{A Critical Evaluation}\label{chp:a_critical_evaluation}
 Earlier in the paper, we decided to evaluate the implementation based on two mobile constraints, namely battery life and storage space.
-To do this, we the sections by placing expectations based on the design and implementation.
+To do this, we begin by placing expectations based on the design and implementation.
 Afterwards, we measure the difference using the tools available in the Android platform.
 
 \section{Battery Life}\label{sec:battery_life}
@@ -47,9 +47,9 @@ The space used by an application is split into three categories:
 
 The storage space of the application varies from device to device.
 We use a device with the arm64 architecture, on which Riot for Android has an App size of 78.38MB\@.
-Since the design uses a mostly unmodified Riot with an Embedded Dendrite, we can expect this size to increase.
+Since we do nothing to reduce the size of the application, we expect the app size to increase when we add the homeserver.
 Additionally, Dendrite stores information about registered users, rooms, other servers and message metadata.
-The cache and user data are therefore expected to increase significantly as well.
+The cache and user data are therefore expected to increase significantly.
 In the best case scenario, the size increase is only acceptable on more powerful Android devices.
 
 \subsection{Storage Use}\label{sec:storage_use}
@@ -62,6 +62,8 @@ Matrix rooms do not have an upper limit on the amount of participants. On a devi
 On the other hand, text can be stored in a very compact way compared to media formats, which means that this is not necessarily the case, even for the larger rooms, unless they are media heavy.
 Therefore, the storage space used by the app will be reasonable as long as the user avoids using excessive media and limits the size of chat rooms.
 
+These policies can be enforced by placing limits on room sizes and disabling media in the embedded homeserver.
+
 
 \chapter{Open Source, Complexity and Alternatives}\label{chp:open_source_complexity_alternatives}
 This project was intentionally conducted with \ac{OSS}.
@@ -72,8 +74,8 @@ We wish to discuss how these elements affect our work.
 
 \section{Open Source Software}\label{sec:open_source}
 The term ``Open Source Software'' should be understood as software which is licensed by a license recognized by the \ac{OSI}\cite{open_source_initiative}.
-In a nutshell, these licenses allow the software to be used, modified and redistributed, although the terms for those actions vary.
-As mentioned in the beginning of the chapter, we are strong believers in the principles of open source, and will in this section describe how it has affected the project.
+The \ac{OSI} recognizes all licenses which comply with the \ac{OSD}\cite{open_source_definition}.
+We are strong believers in the principles stated in the \ac{OSD}, and explain how it has affected the project.
 
 \subsection{Benefits of Open Source}\label{subsec:benefits_of_open_source}
 This project uses code which is completely open source.
@@ -113,7 +115,7 @@ The benefits of free sharing of information could be broken down into the follow
 		\textbf{Security}:
 		In order to construct a fully safe product, the author must be able to understand all of its components.
 		By using only open source software, authors can audit each component for security concerns.
-		We have not performed an audit of the components in Matrix, but others have\todo{citations}.
+		We have not performed an audit of the components in Matrix, but others have\cite{matrix_olm_cryptographic_review}.
 	}
 \end{itemize}
 
@@ -130,7 +132,7 @@ We summarize the main drawbacks which we experienced in the following list:
 	}
 	\item{
 		\textbf{Priorities}:
-		We were lucky that our intent to experiment Peer-to-Peer Matrix happened to be aligned with the Matrix team.
+		We were lucky that our intent to experiment with Peer-to-Peer Matrix happened to be aligned with the Matrix team.
 		However, the Matrix team wished to implement it via the browser, whereas we intended to do it via Mobile.
 		Because of this, we had to do extra work to get the mobile version working, which resulted in a less complete implementation.
 	}
@@ -139,28 +141,33 @@ We summarize the main drawbacks which we experienced in the following list:
 		The different software projects we used were at different levels of maintenance, with Riot for Android being mostly abandoned, and Dendrite being very new and active.
 		The non-official implementations were also at varying levels of activity, with some being abandoned, and others not being usable yet.
 	}
-	\item{
-		\textbf{Funding}:
-
-	}
 \end{itemize}
 
 Overall, working with \ac{OSS} was a positive experience in this project.
-When working with open source, we believe it is important to be aware of the risks and drawbacks, and to include them when considering the use of \ac{OSS} in projects.
-
-\section{Code Complexity}\label{sec:code_complexity}
-\todo{%
-	Discuss the process of getting to know a larger code base, and the risks involved.
-	How do you prioritize which things you learn, etc?
-}
-
+We believe that the advantages of working with open source outweigh the potential drawbacks.
+This is especially true for contributors who are aware of the risks, and make efforts to mitigate them.
 
 \section{Alternative Solutions}\label{sec:alternative_solutions}
-\todo{Describe the possibility of developing a client and a server which are more thoroughly integrated, for example by skipping the messaging via HTTP.}
-\todo{Describe the potential use of the WebAssembly solution via a something like React Native, etc.}
-\todo{Describe potential alternatives to libp2p.}
+We have learned from porting Peer-to-Peer Matrix to Android, and in the process we have come up with improvements and alternative methods which we discuss here.
+
+\subsection{A Combined Client-Server}\label{subsec:combined_client_server}
+While our approach to combine two Matrix components into a single app works, it is wasteful.
+Although the Client and Server run in the same process, they communicate via HTTPS\@.
+It would be much more effective to write them both in the same programming language and share the data in memory instead.
+An alternative approach could therefore be to combine the two into a single application which implements federation with other homeservers, but otherwise limits the Client-Server API to the local device.
+
+\subsection{Using WebAssembly}\label{subsec:using_webassembly}
+While we have been developing Peer-to-Peer Matrix in Go and Java, the Matrix team has continued development of the WebAssembly implementation.
+Since Android browsers are capable of using that solution as well, one might consider packaging Riot for Web and the WebAssembly Dendrite as an Android application.
+While this solution would likely be less performant than one written for native Android, it would be better aligned with the priorities of the Matrix team.
 
 \subsection{Fog Computing}\label{sec:fog_computing}
-Since running a modified homeserver on the phone has drawbacks, especially with regard to storage, using fog computing might be a useful alternative.
-In practice, this would mean providing a single homeserver locally for one or more clients, which would handle the storage and Server-Server \ac{API}.
-A paper from 2015 by Hassan et al indicates that this form of computation may be more effective than offloading completely to a central server\cite{hassan2015help}.
+In a paper from 2015, Hassan et al suggest the use of fog computing to improve performance for applications which typically use the cloud\cite{hassan2015help}.
+Fog computing is essentially introducing a new layer of computation between the mobile device and the cloud.
+In practice, this could mean running a homeserver on a stationary device at home, with which one or more mobile devices could connect.
+
+By using fog computing, we could avoid the negative impact on the mobile application by storing the metadata on a separate device.
+Additionally, the paper suggests that fog computing may have a positive impact on battery performance, due to better server placement.
+
+However, this approach requires more technical know-how than simply downloading the app and signing up with a username and password.
+The performance of fog computing is also affected by the distance to the user and networking conditions.
