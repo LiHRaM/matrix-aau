@@ -9,7 +9,22 @@ Turning back to the problem statement introduced in Section~\ref{sec:problem_sta
 \end{quote}
 From our implementation, we determine that the minimum requirements for running peer-to-peer Matrix on Android are \textit{implementing the Matrix client and server \ac{API}s in a single application, where the server \ac{API}s include peer-to-peer networking}.
 Given the current state of the ecosystem, this task is becoming less and less difficult.
-As a result of our contribution described in Section~\ref{sec:preparing_dendrite}, an updated mobile-compatible version of Dendrite is now hosted in the main version of Dendrite at \github{matrix-org/dendrite}.
+
+In order to determine this, we accomplished the following:
+\begin{itemize}
+	\item{
+	      \textbf{Contribute to Dendrite}:
+	      As a result of our contribution described in Section~\ref{sec:preparing_dendrite}, an updated peer-to-peer Dendrite demo is now hosted in the main version of Dendrite at \github{matrix-org/dendrite}.
+	      }
+	\item{
+	      \textbf{Port Dendrite using Gomobile}:
+	      We cross-compiled Dendrite for a mobile phone, revealing a bug in the Dendrite code as a consequence.
+	      }
+	\item{
+	      \textbf{Modify Riot to run Dendrite}:
+	      We modified a Matrix client to run Dendrite.
+	      }
+\end{itemize}
 
 \paragraph\ The second question:
 \begin{quote}
@@ -48,8 +63,10 @@ A competitive solution would likely need the following features, which we did no
 	      }
 \end{itemize}
 
-\section{The Big Picture}
-
-
 \section{Future Work}
-\todo{Fog computing, what else?}
+As described in Section~\ref{sec:fog_computing} and the conclusion, fog computing may be a viable approach to providing peer-to-peer Matrix to mobile devices.
+The main drawback to this approach is the complexity of setting it up, in addition to the necessary skills for appropriate maintenance and security.
+It may be interesting to look into how this process can be made simple and straightforward for the average user, for example by creating a device which just needs to be plugged in, and receives secure updates.
+
+Alternatively, strategies for peer-to-peer computing in the cloud may also be a fruitful approach, and looking into strategies for implementing that effectively is also an interesting area of study.
+Specifically, working on the limitations in the Matrix Specification described in Section~\ref{subsec:matrix_spec_changes}.
