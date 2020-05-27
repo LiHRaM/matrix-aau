@@ -61,7 +61,7 @@ These results show that the battery consumption of peer-to-peer Riot is reasonab
 
 
 \subsection{Further Optimizations}
-However, the energy impact could be reduced even further by explicitly pausing Dendrite when the app is paused.
+We did not perform further optimizations after this analysis, but the background activity could be disabled.
 This would be possible due to two reasons:
 \begin{enumerate}
 	\item{
@@ -77,8 +77,6 @@ This would be possible due to two reasons:
 	      Creating a new task creates an object which we can use to suspend and resume the task running on the thread.
 	      }
 \end{enumerate}
-
-These optimizations are useful, but not necessary, as the Android operating system is quite good at suspending tasks on its own.
 
 \section{Storage Space}\label{sec:storage_space}
 The space used by an application is split into three categories:
@@ -128,7 +126,17 @@ We wish to discuss how these elements affect our work.
 \section{Open Source Software}\label{sec:open_source}
 The term ``Open Source Software'' should be understood as software which is licensed by a license recognized by the \ac{OSI}\cite{open_source_initiative}.
 The \ac{OSI} recognizes all licenses which comply with the \ac{OSD}\cite{open_source_definition}.
-We are strong believers in the principles stated in the \ac{OSD}, and explain how it has affected the project.
+We believe in the general principles of open access to information, and would like to discuss our experiences working with \ac{OSS} in this project.
+
+\subsection{Licensing}\label{subsec:licensing}
+The Dendrite and Riot for Android projects use the Apache License 2.0\cite{apache_2pt0}.
+These projects follow the policy that all contributions have to be signed off by the contributors, by which they accept the terms of contributing.
+The contributions therefore cease to be our intellectual property, and become the property of the owner of the license, which in this case is the Matrix Foundation.
+
+It can be risky to give work away in such a manner.
+Especially so when the license does not prevent derivative works to be sold for profit, or for the source code to become unavailable, i.e.~closed source.
+The Matrix Foundation was established as a neutral custodian of the Matrix Standard in order to avoid issues that might arise from actors working in their own interest, and is supposed to operate ``for the greater benefit of the whole ecosystem'', which is defined as anyone who uses the Matrix protocol\cite{matrix_org_foundation}.
+It has a mission, a manifesto, and rules by which it must operate.
 
 \subsection{Benefits of Open Source}\label{subsec:benefits_of_open_source}
 This project uses code which is completely open source.
@@ -217,13 +225,32 @@ While this solution would likely be less performant than one written for native 
 \subsection{Fog Computing}\label{sec:fog_computing}
 In a paper from 2015, Hassan et al suggest the use of fog computing to improve performance for applications which typically use the cloud\cite{hassan2015help}.
 Fog computing is essentially introducing a new layer of computation between the mobile device and the cloud.
-In practice, this could mean running a homeserver on a stationary device at home, with which one or more mobile devices could connect.
+In practical terms, a single device at home could serve as a homeserver for multiple mobile devices.
+This approach may be a practical compromise between cloud hosting a Matrix server and embedding it in a mobile device.
+It allows users to manage their personal data at home, but avoids the excess battery and storage costs on the mobile device.
 
-By using fog computing, we could avoid the negative impact on the mobile application by storing the metadata on a separate device.
-Additionally, the paper suggests that fog computing may have a positive impact on battery performance, due to better server placement.
+However, this approach may require hardware and software maintenance, and good security practices, so that the fog computing device does not become a weakness to be exploited by hackers or malware.
+This extra complexity is easy to avoid with cloud offerings, where providers can offer a whole package deal.
+By embedding the server in the mobile device, it can also be programmed for a simpler setup.
+These arguments are summarized in Table~\ref{tab:alternatives}.
 
-However, this approach requires more technical know-how than simply downloading the app and signing up with a username and password.
-The performance of fog computing is also affected by the distance to the user and networking conditions.
 
-\section{Web 3.0}\label{sec:web_3pt0}
-\todo{Explain the big picture of freeing the internet}
+\begin{table}[]
+	\centering
+	\begin{tabular}{@{}lccc@{}}
+		\toprule
+		                 & \textbf{Cloud Offering} & \textbf{Fog Computing} & \textbf{Embedded Server} \\ \midrule
+		Hardware Access  & No                      & Yes                    & Yes                      \\
+		Subscription     & Yes                     & No                     & No                       \\
+		Peer-to-Peer     & No\footnotemark         & Yes                    & Yes                      \\
+		Space Efficient  & Yes                     & Yes                    & No                       \\
+		Energy Efficient & Yes                     & Yes                    & No                       \\ \bottomrule
+	\end{tabular}
+	\caption{An overview of the differences between cloud computing, fog computing and embedded servers.}%
+	\label{tab:alternatives}
+\end{table}
+
+\footnotetext{
+	Cloud offerings do not offer Peer-to-Peer Matrix servers yet.
+	Considering our contributions, and the current experiments that the Matrix foundation is conducting, this is likely to change.
+}
