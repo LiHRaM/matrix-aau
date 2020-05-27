@@ -178,6 +178,8 @@ We consider the different available homeservers and clients to understand their 
 
 \subsection{Homeservers}\label{sec:official_homeservers}
 The Matrix organization has two official homeservers, Synapse\cite{matrix_org_synapse} and Dendrite\cite{matrix_org_dendrite}.
+There are also unsupported alternatives listed on their homepage\cite{try_matrix}.
+Unofficial implementations are out of the scope of this project, and so we do not evaluate those.
 
 Homeservers perform the bulk of the work in the Matrix network.
 They are the only component in the Matrix standard that needs to change in order to implement \ac{P2P} networking\cite{fosdem_event_p2p_matrix}.
@@ -243,13 +245,15 @@ Riot and RiotX are written in Java and Kotlin respectively, and can therefore bo
 The second approach would require less work, as existing code can be used for both the client and server.
 
 \subsection{Mobile Clients}\label{sec:official_clients}
+Currently, Matrix has two official clients for Android, namely Riot and RiotX.
+There are other open source alternatives which we do not consider in this report, as they are not officially supported and therefore not guaranteed to be maintained.
+They are listed on the Matrix homepage\cite{try_matrix}.
+Additionally, we do not consider iOS, as the author of this report has no access to such a device.
+
 Matthew Hodgson, the co-founder of Matrix, explains in his talk on \ac{P2P} at FOSDEM\cite{fosdem_event_p2p_matrix} that client applications do not need to be modified in order to work with \ac{P2P} homeservers.
 In fact, the clients and the homeservers communicate in exactly the same way.
 It is therefore only the way that servers communicate with each other that changes.
 This implies the possibility of embedding a homeserver into a mobile client.
-Currently, Matrix has two official clients for Android, namely Riot and RiotX.
-There are other open source alternatives which we do not consider in this report, as they are not officially supported and therefore not guaranteed to be maintained.
-Additionally, we do not consider iOS, as the author of this report has no access to such a device.
 
 \subsubsection{Riot}
 Riot is the current stable client for Android phones.

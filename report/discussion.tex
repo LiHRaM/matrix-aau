@@ -4,6 +4,60 @@ To do this, we begin by placing expectations based on the design and implementat
 Afterwards, we measure the difference using the tools available in the Android platform.
 
 \section{Battery Life}\label{sec:battery_life}
+We expect an increase of power usage after our modifications.
+Although there should be minimal delay in the Client-Server communication, the requests are still made via HTTP\@.
+In addition to the Client-Server communication, the application now also handles Server-Server communication and federation, as well as peer discovery.
+
+\subsection{Tracking Power Use}
+We use the program recommended by the Google Developer documentation, Battery Historian\cite{battery_historian}.
+The approach is explained in the documentation, and can be summarized as the following list of steps:
+\begin{enumerate}
+	\item{
+	      \textbf{Optional: Reset Battery Stats}:
+	      Android phones constantly monitor battery usage in great detail.
+	      In order to reduce noise, it is recommended to reset this data just before using the desired application.
+	      }
+	\item{
+	      \textbf{Use Application}:
+	      While using the application, the Android phone monitors the events and their effects on the power level of the phone.
+	      }
+	\item{
+	      \textbf{Store Bug Report}:
+	      After using the app, the data can be transferred to a computer in the form of a bug report.
+	      }
+	\item{
+	      \textbf{Upload Bug Report}:
+	      Battery Historian is actually a web server which allows uploading bug reports.
+	      Once the bug report is loaded, Battery Historian presents an in-depth dashboard for analyzing the data in the bug report.
+	      }
+	\item{
+	      \textbf{Analyze Data}:
+	      There are many ways to analyze the available data, including a way to measure the battery impact of a single application.
+	      }
+\end{enumerate}
+
+We applied these steps to two phones, where one phone had the unmodified Riot app, and the other had the peer-to-peer Riot app which we implemented.
+The peer-to-peer application participated in a small conversation between two individuals, whereas the original app accessed rooms on the Matrix network.
+
+The results showed that the modified app is more active in the background, see Table~\ref{tab:battery_comparison}.
+Presumably, this is because the Dendrite server constantly probes for peers on the network, whereas the original application only wakes on push notifications.
+In the foreground, the original app consumed more power.
+We suspect, however, that the power consumption of the modified app does not scale well with chatroom sizes and media use, as it is processed by both the homeserver and the client.
+
+These results show that the battery consumption of peer-to-peer Riot is reasonable, given constrained use, such as small chatroom sizes.
+
+
+\begin{table}[]
+	\centering
+	\begin{tabular}{@{}lcc@{}}
+		\toprule
+		                           & \multicolumn{1}{l}{\textbf{Peer-to-Peer Riot}} & \multicolumn{1}{l}{\textbf{Unmodified Riot}} \\ \midrule
+		Estimated Power Use / Hour & 6.9\%                                          & 13.7\%                                       \\
+		Background Packets / Hour  & 1620                                           & 0                                            \\ \bottomrule
+	\end{tabular}
+	\caption{A comparison of battery use of two Riot apps. The Peer-to-Peer application is more active in the background, whereas the original consumes more power in the foreground.}%
+	\label{tab:battery_comparison}
+\end{table}
 
 
 \subsection{Further Optimizations}
@@ -170,3 +224,6 @@ Additionally, the paper suggests that fog computing may have a positive impact o
 
 However, this approach requires more technical know-how than simply downloading the app and signing up with a username and password.
 The performance of fog computing is also affected by the distance to the user and networking conditions.
+
+\section{Web 3.0}\label{sec:web_3pt0}
+\todo{Explain the big picture of freeing the internet}
