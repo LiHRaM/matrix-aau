@@ -9,7 +9,7 @@ The initial problem statement has several elements, which we deconstruct into th
 	      }
 	\item{
 	      \textbf{Matrix on the Smartphone}:
-	      How does Matrix currently work on mobiles?
+	      How does Matrix work on mobiles?
 	      What effect will introducing peer-to-peer networking have?
 	      }
 	\item{
@@ -22,7 +22,7 @@ The initial problem statement has several elements, which we deconstruct into th
 By exploring the answers to these questions, we inform a more concrete problem statement.
 
 \section{Peer-to-Peer Matrix}
-To understand how Matrix works, we turn to the Matrix Standard, which defines what is currently possible.
+To understand how Matrix works, we turn to the Matrix Standard, which defines what is possible.
 Afterwards, we consider how it can be extended to include peer-to-peer communication.
 
 \subsection{The Matrix Standard}
@@ -156,7 +156,7 @@ With regard to \ac{P2P} Matrix on mobile devices, there are already open proposa
 	      }
 	\item{
 	      \textbf{Centralized Accounts}:
-	      Although Matrix is a decentralized protocol, accounts are currently centralized.
+	      Although Matrix is a decentralized protocol, accounts are centralized.
 	      As a \ac{P2P} implementation would be running a homeserver per device, a user would have to register multiple accounts.
 	      There is already an issue for decentralized user accounts on Matrix in \github{matrix-org/matrix-doc\#915}.
 	      }
@@ -225,8 +225,8 @@ Readers in a similar manner use the room state to know which servers and users h
 \paragraph{Dendrite Code}
 Dendrite is written in Go\cite{golang_org} and separated into several libraries, which can be accessed through commands.
 The Go programming language supports Android compilation through Gomobile\cite{gomobile}, and Dendrite should therefore be portable to the smartphone.
-The \ac{P2P} code is implemented on the \texttt{master} branch for JavaScript/Wasm, and depends on SQLite, which allows the homeserver to run completely in the browser.
-Unfortunately, the JavaScript/WASM implementation of \ac{P2P} Dendrite does not support cross-compilation for Android, and must instead be in pure Go.
+The \ac{P2P} code is implemented on the \texttt{master} branch for JavaScript/WebAssembly, and depends on SQLite, which allows the homeserver to run completely in the browser.
+Unfortunately, the JavaScript/WebAssembly implementation of \ac{P2P} Dendrite does not support cross-compilation for Android, and must instead be in pure Go.
 The \texttt{p2p} branch has a pure Go implementation of \ac{P2P}, but does not support SQLite.
 In order to use the latest developments for \ac{P2P} Matrix, the \texttt{p2p} branch must be merged with \texttt{master}.
 
@@ -245,7 +245,7 @@ Riot and RiotX are written in Java and Kotlin respectively, and can therefore bo
 The second approach would require less work, as existing code can be used for both the client and server.
 
 \subsection{Mobile Clients}\label{sec:official_clients}
-Currently, Matrix has two official clients for Android, namely Riot and RiotX.
+Matrix has two official clients for Android, namely Riot and RiotX.
 There are other open source alternatives which we do not consider in this report, as they are not officially supported and therefore not guaranteed to be maintained.
 They are listed on the Matrix homepage\cite{try_matrix}.
 Additionally, we do not consider iOS, as the author of this report has no access to such a device.
@@ -263,8 +263,8 @@ According to the introductory \texttt{README.md} on the official repository at \
 
 \subsubsection{RiotX}
 RiotX is an experimental client at a similar stage as Dendrite, i.e.~not feature complete, but intended as the reference client for Android in the future.
-It is mostly written in Kotlin, which is currently the recommended language by Google for Android development.
-It is not capable of connecting to a Dendrite homeserver currently, complaining that it is an outdated homeserver.
+It is mostly written in Kotlin, which is the recommended language by Google for Android development.
+It is not capable of connecting to a Dendrite homeserver, complaining that it is an outdated homeserver.
 
 \section{Mobile Constraints}\label{sec:mobile_constraints}
 We begin with an overview of the mainstream constraints of using mobile devices.

@@ -38,7 +38,7 @@ For example, we do not intend to modify the Client-Server communication.
 	\resizebox{!}{!}{\input{graphics/design-constraints.tex}}
 	\caption{%
 		The three layers of constraints with which we work.
-		The Matrix Standard is fundamental to the design, followed by the homeserver architecture and lastly the android ecosystem.
+		The Matrix Standard is fundamental to the design, followed by the homeserver architecture and lastly the Android ecosystem.
 	}%
 	\label{fig:design_constraints}
 \end{figure}
@@ -50,7 +50,7 @@ We can assume that implementing the Server-Server \ac{API} has at least some neg
 Since we do not know which applications we will work with, we defer the concrete goals until those decisions have been made.
 
 \chapter{Design Dilemma and Resolution}\label{chp:design_dilemma}
-The next step is to decide which implementations of the Matrix standard we use to implement the peer-to-peer Mobile prototype.
+The next step is to decide which implementations of the Matrix standard we use to create the peer-to-peer Mobile prototype.
 We begin this chapter by discussing the advantages and disadvantages of the official implementations.
 The choice of applications informs the general design of the system, which we describe in the conclusion of the design chapter.
 
@@ -79,7 +79,7 @@ We estimate the work required for each homeserver to support the minimum require
 
 Table~\ref{tab:homeserver_comparison} describes the result of this comparison, which we now describe in further detail.
 
-\begin{table}
+\begin{table}[t]
 	\center{}
 	\begin{tabular}{lccc}
 		\textbf{Server} & \multicolumn{1}{l}{\textbf{Peer-to-Peer}} & \multicolumn{1}{l}{\textbf{Android Packaging}} & \multicolumn{1}{l}{\textbf{Embedded Database Support}} \\ \toprule

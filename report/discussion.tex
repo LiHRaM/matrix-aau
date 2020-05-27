@@ -55,7 +55,11 @@ These results show that the battery consumption of peer-to-peer Riot is reasonab
 		Estimated Power Use / Hour & 6.9\%                                          & 13.7\%                                       \\
 		Background Packets / Hour  & 1620                                           & 0                                            \\ \bottomrule
 	\end{tabular}
-	\caption{A comparison of battery use of two Riot apps. The Peer-to-Peer application is more active in the background, whereas the original consumes more power in the foreground.}%
+	\caption{
+		A comparison of battery use of two Riot apps. The Peer-to-Peer application is more active in the background, whereas the original consumes more power in the foreground.
+		We choose these statistics, as we believe they demonstrate the difference between the two applications clearly.
+		Battery Historian provides a large and confusing overview, which we have chosen to delinate into these key points.
+		}%
 	\label{tab:battery_comparison}
 \end{table}
 
@@ -77,6 +81,8 @@ This would be possible due to two reasons:
 	      Creating a new task creates an object which we can use to suspend and resume the task running on the thread.
 	      }
 \end{enumerate}
+
+While these optimizations would improve the battery life of the phone, they would make it less responsive to messages received while the user was not active, which might result in a poor user experience.
 
 \section{Storage Space}\label{sec:storage_space}
 The space used by an application is split into three categories:
