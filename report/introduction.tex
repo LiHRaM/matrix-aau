@@ -21,7 +21,7 @@ Three examples of such services are Slack, WhatsApp and Facebook Messenger, with
 Closed-platform services, or walled gardens, are a fragmenting influence on peoples' communication.
 Although these services run over the internet, they are designed in isolation, and do not adhere to an external standard.
 In order to use such a service, a user must acquire a client designed with a private protocol.
-This has the negative effect of people having to keep track of multiple services for the same task, i.e.~communication.
+This has the negative effect of people having to keep track of multiple services for communication.
 They are forced to rely on external vendors for the storage and security of their messages.
 We refer to this problem as \textit{the walled garden problem}.
 
@@ -29,14 +29,14 @@ We refer to this problem as \textit{the walled garden problem}.
 	\centering
 	\resizebox{!}{!}{\input{graphics/client-server.tex}}
 	\caption{
-		Typical client-server architecture.
+		Typical Client-Server architecture.
 		Client A and Client B communicate via a Server, which is responsible for passing on the messages.
 	}\label{fig:client_server}
 \end{figure}
 
 \subsection{Trust}\label{sec:Trust}
 One of the main drawbacks of using a walled garden service is \textit{trust}.
-Client-server architecture places servers as mediators between clients, forcing all communication to go through servers, as illustrated in figure~\ref{fig:client_server}.
+Client-Server architecture places servers as mediators between clients, forcing all communication to go through servers, as illustrated in figure~\ref{fig:client_server}.
 A common feature of communications servers is that the entirety of messages be available for an indefinite period of time.
 Platforms which follow this architecture for messaging therefore store the messages of all participants.
 For closed-source vendors, it is intractable to know whether the messages passed are done so securely and privately.
@@ -82,7 +82,7 @@ Figure~\ref{fig:matrix_structure} demonstrates how two users might be connected 
 There are two servers: \textit{matrix.a.com}, and \textit{matrix.b.com}.
 The users are \textit{@a:a.com}, and \textit{@b:b.com}.
 A message from \textit{@a:a.com} would pass through both of the servers before \textit{@b:b.com} would receive them.
-This is an implementation of the client-server architecture with a decentralized approach, which tackles the issues of trust and privacy.
+This is an implementation of the Client-Server architecture with a decentralized approach, which tackles the issues of trust and privacy.
 As servers can be owned and operated by anyone, users are not required to trust a third party.
 For the most extreme privacy concerns, a user might simply host a private server which only permitted internal communication, and required encryption on all channels.
 For more casual use cases, the network of servers provides redundancy, as messages are copied by each participating homeserver.
@@ -105,7 +105,7 @@ The standard was declared stable and released as 1.0 on June 10th, 2019\cite{mat
 Its limitations become apparent as one considers its applications, such as \ac{P2P} Matrix.
 
 \subsection{Peer-to-Peer Networks}
-In contrast to the client-server model described in Section~\ref{sec:Trust}, a peer-to-peer network allows nodes to connect directly to each other.
+In contrast to the Client-Server model described in Section~\ref{sec:Trust}, a peer-to-peer network allows nodes to connect directly to each other.
 There is no central authority, and all nodes as such have equal privilege and functionality.
 Nodes are named peers.
 This model is beneficial in terms of cost, as it relies on the collective computing power of its peers instead of a dedicated service.
