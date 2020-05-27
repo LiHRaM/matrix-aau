@@ -4,7 +4,7 @@ To do this, we begin by placing expectations based on the design and implementat
 Afterwards, we measure the difference using the tools available in the Android platform.
 
 \section{Battery Life}\label{sec:battery_life}
-\todo{Write this when the data from Battery Historian is ready.}
+
 
 \subsection{Further Optimizations}
 However, the energy impact could be reduced even further by explicitly pausing Dendrite when the app is paused.
@@ -31,17 +31,17 @@ The space used by an application is split into three categories:
 \begin{enumerate}
 	\item{
 	      \textbf{App size}:
-		  App size is determined by the space taken by the application itself, which includes Java class files, resource files and a single file which contains compiled resources\cite{android_devdocs_apksize}.
+	      App size is determined by the space taken by the application itself, which includes Java class files, resource files and a single file which contains compiled resources\cite{android_devdocs_apksize}.
 	      }
 	\item{
 	      \textbf{User data}:
-		  Each Android application has access to a special folder where it can store user data.
-		  User data is meant for more permanent types of data, such as credentials and settings.
+	      Each Android application has access to a special folder where it can store user data.
+	      User data is meant for more permanent types of data, such as credentials and settings.
 	      }
 	\item{
 	      \textbf{Cache}:
-		  Each Android application is also given a storage mechanism known as the cache.
-		  The cache is meant for temporary data, such as resources, which it can download to avoid excessive network use.
+	      Each Android application is also given a storage mechanism known as the cache.
+	      The cache is meant for temporary data, such as resources, which it can download to avoid excessive network use.
 	      }
 \end{enumerate}
 
@@ -49,8 +49,7 @@ The storage space of the application varies from device to device.
 We use a device with the arm64 architecture, on which Riot for Android has an App size of 78.38MB\@.
 Since we do nothing to reduce the size of the application, we expect the app size to increase when we add the homeserver.
 Additionally, Dendrite stores information about registered users, rooms, other servers and message metadata.
-The cache and user data are therefore expected to increase significantly.
-In the best case scenario, the size increase is only acceptable on more powerful Android devices.
+The cache and user data are therefore expected to increase.
 
 \subsection{Storage Use}\label{sec:storage_use}
 When we compile the Dendrite server for our phone, the generated \texttt{server.aar} artifact has a size of 19.5MB\@.
@@ -82,17 +81,17 @@ This project uses code which is completely open source.
 Specifically, the code is located in the following repositories:
 \begin{itemize}
 	\item{
-		\github{LiHRaM/riot-android}:
-		The modified Riot app which runs Dendrite as a peer-to-peer server.
-	}
+	      \github{LiHRaM/riot-android}:
+	      The modified Riot app which runs Dendrite as a peer-to-peer server.
+	      }
 	\item{
-		\github{LiHRaM/server}:
-		The Go library which is compiled to \texttt{server.aar} and used in Riot for Android.
-	}
+	      \github{LiHRaM/server}:
+	      The Go library which is compiled to \texttt{server.aar} and used in Riot for Android.
+	      }
 	\item{
-		\github{matrix-org/dendrite}:
-		We have contributed to the official Dendrite, where our submissions were received as \ac{OSS}.
-	}
+	      \github{matrix-org/dendrite}:
+	      We have contributed to the official Dendrite, where our submissions were received as \ac{OSS}.
+	      }
 \end{itemize}
 
 The main purpose for storing the code in publicly available repositories is the \textit{free sharing of information}.
@@ -102,21 +101,21 @@ Contrast this with closed software, where the impact of discoveries is limited t
 The benefits of free sharing of information could be broken down into the following benefits:
 \begin{itemize}
 	\item{
-		\textbf{Open Collaboration}:
-		Anyone who is willing to contribute to open source may do so, given that they adhere to the terms of the licenses.
-		Due to this, we were able to freely collaborate with the Dendrite developers to experiment with peer-to-peer Matrix.
-	}
+	      \textbf{Open Collaboration}:
+	      Anyone who is willing to contribute to open source may do so, given that they adhere to the terms of the licenses.
+	      Due to this, we were able to freely collaborate with the Dendrite developers to experiment with peer-to-peer Matrix.
+	      }
 	\item{
-		\textbf{Software Quality}:
-		We have learned much from the software released as \ac{OSS} in this project.
-		We believe that other students and those who wish to learn have a greater chance of becoming quality engineers by reading more quality software.
-	}
+	      \textbf{Software Quality}:
+	      We have learned much from the software released as \ac{OSS} in this project.
+	      We believe that other students and those who wish to learn have a greater chance of becoming quality engineers by reading more quality software.
+	      }
 	\item{
-		\textbf{Security}:
-		In order to construct a fully safe product, the author must be able to understand all of its components.
-		By using only open source software, authors can audit each component for security concerns.
-		We have not performed an audit of the components in Matrix, but others have\cite{matrix_olm_cryptographic_review}.
-	}
+	      \textbf{Security}:
+	      In order to construct a fully safe product, the author must be able to understand all of its components.
+	      By using only open source software, authors can audit each component for security concerns.
+	      We have not performed an audit of the components in Matrix, but others have\cite{matrix_olm_cryptographic_review}.
+	      }
 \end{itemize}
 
 \subsection{Disadvantages of Open Source}\label{subsec:open_source_disadvantages}
@@ -126,21 +125,21 @@ Our project is a University experiment, whereas the main Dendrite contributors a
 We summarize the main drawbacks which we experienced in the following list:
 \begin{itemize}
 	\item{
-		\textbf{Communication}:
-		Asynchronous communication is useful for large, distributed projects, but needs to be carefully moderated.
-		Some of the feedback that we received on our initial contributions felt hostile, for example, which is not helpful, and often harmful.
-	}
+	      \textbf{Communication}:
+	      Asynchronous communication is useful for large, distributed projects, but needs to be carefully moderated.
+	      Some of the feedback that we received on our initial contributions felt hostile, for example, which is not helpful, and often harmful.
+	      }
 	\item{
-		\textbf{Priorities}:
-		We were lucky that our intent to experiment with Peer-to-Peer Matrix happened to be aligned with the Matrix team.
-		However, the Matrix team wished to implement it via the browser, whereas we intended to do it via Mobile.
-		Because of this, we had to do extra work to get the mobile version working, which resulted in a less complete implementation.
-	}
+	      \textbf{Priorities}:
+	      We were lucky that our intent to experiment with Peer-to-Peer Matrix happened to be aligned with the Matrix team.
+	      However, the Matrix team wished to implement it via the browser, whereas we intended to do it via Mobile.
+	      Because of this, we had to do extra work to get the mobile version working, which resulted in a less complete implementation.
+	      }
 	\item{
-		\textbf{Activity}:
-		The different software projects we used were at different levels of maintenance, with Riot for Android being mostly abandoned, and Dendrite being very new and active.
-		The non-official implementations were also at varying levels of activity, with some being abandoned, and others not being usable yet.
-	}
+	      \textbf{Activity}:
+	      The different software projects we used were at different levels of maintenance, with Riot for Android being mostly abandoned, and Dendrite being very new and active.
+	      The non-official implementations were also at varying levels of activity, with some being abandoned, and others not being usable yet.
+	      }
 \end{itemize}
 
 Overall, working with \ac{OSS} was a positive experience in this project.

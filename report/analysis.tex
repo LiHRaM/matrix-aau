@@ -231,7 +231,7 @@ In order to use the latest developments for \ac{P2P} Matrix, the \texttt{p2p} br
 \paragraph{Libp2p}
 Dendrite uses \ac{P2P} libraries provided by libp2p, which is a collection of protocols, libraries and implementations for peer-to-peer networking\cite{libp2p}.
 The JavaScript implementation is capable of peer discovery across the internet using a protocol known as the \ac{WSS} protocol, the source code is at \github{libp2p/js-libp2p-websocket-star}.
-Unfortunately, this protocol is not supported in Go\footnote{See \textit{Go} column under libp2p-webrtc-star: \url{libp2p.io/implementations}}.
+Unfortunately, this protocol is not supported in Go\cite{libp2p_implementations}.
 Instead, the Go implementation supports peer discovery on the local network using \ac{mDNS}.
 
 \subsubsection{Gomobile}\label{sec:gomobile}
@@ -286,8 +286,6 @@ We want to evaluate the impact of our changes to preëxisting programs fairly.
 To do this, we establish a baseline of the current battery life impact and storage space use, which we measure the modified program against.
 As a part of the design, we may also set a goal for the impact that our modifications have on the baseline.
 
-\section{Problem Statement}\label{sec:problem_statement}
-
 \begin{figure}
 	\centering
 	\resizebox{!}{!}{\input{graphics/general-arch.tex}}
@@ -296,10 +294,13 @@ As a part of the design, we may also set a goal for the impact that our modifica
 	}%
 	\label{fig:p2p-embed}
 \end{figure}
+
+\section{Problem Statement}\label{sec:problem_statement}
+
 From the analysis we have learned that \ac{P2P} Matrix is possible by embedding a homeserver into a client.
 We also learned that we must carefully monitor the use of battery and storage space when developing a mobile application.
 
-We propose the following problem statement:\\
+We expand the initial problem statement from Section~\ref{subsec:initial_problem_statement} with the following questions:\\
 \begin{itemize}
 	\item What are the minimum requirements for running peer-to-peer Matrix on Android?
 	\item How well does such a solution respect mobile constraints?

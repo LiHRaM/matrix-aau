@@ -1,0 +1,51 @@
+\addcontentsline{toc}{chapter}{\protect\numberline\ Cover Page}
+\begin{titlepage}
+	\vspace*{\fill}
+	\backgroundsetup{
+		scale=1.1,
+		angle=0,
+		opacity=1.0,  %% adjust
+		contents={\includegraphics[width=\paperwidth,height=\paperheight]{aau/aau_waves}}
+	}
+	\addtolength{\hoffset}{0.5\evensidemargin-0.5\oddsidemargin} %set equal margins on the frontpage - remove this line if you want default margins
+	\noindent%
+	{\color{white}\fboxsep0pt\colorbox{aaublue}{\begin{tabular}{@{}p{\textwidth}@{}}
+				\begin{center}
+					\Huge{\textbf{\thetitle}}
+				\end{center}
+				\begin{center}
+					\Large{\thesubtitle}
+				\end{center}
+				\vspace{0.2cm}
+				\begin{center}
+					{\Large{\theauthor}}\\
+					\vspace{0.2cm}
+					{\large{\thetheme\\\thegroup\\\thedate}
+					}
+				\end{center}
+				\vspace{0.2cm}
+				\begin{center}
+					{\Large{\theprojecttype}}
+				\end{center}
+			\end{tabular}}}
+	\vfill
+	\begin{center}
+		\includegraphics[width=0.2\paperwidth]{aau/aau_logo_circle_en}
+	\end{center}
+\end{titlepage}
+\clearpage
+
+\addcontentsline{toc}{chapter}{\protect\numberline\ Title Page}
+\aautitlepage{%
+	\englishprojectinfo{\thetitle\\\thesubtitle}
+	{\thetheme}
+	{Spring Semester 2020}
+	{\thegroup}
+	{\theauthor}
+	{\thesupervisor}
+	{1}
+	{\thedate}}
+{\textbf{Department of Computer Science}\\
+	Aalborg University\\
+	\href{https://www.cs.aau.dk/}{https://www.cs.aau.dk/}}
+{\theabstract}

@@ -6,12 +6,7 @@ Finally, we modify Riot to run Dendrite as it starts.
 
 \section{Preparing Dendrite for Android}\label{sec:preparing_dendrite}
 The first task is to prepare Dendrite for Android by adding support in the peer-to-peer version for embedded databases.
-Embedded databases are a very convenient method for storing persistent data in Android, where the preferred method is to use the app's file directory for persistent data\footnotemark, because applications are isolated from the rest of the system.
-\footnotetext{%
-	More information about Android data persistence at\\
-	\url{https://developer.android.com/training/data-storage/} and\\
-	\url{https://developer.android.com/topic/security/best-practices\#internal-storage}.
-}%
+Embedded databases are a very convenient method for storing persistent data in Android, where the preferred method is to use the app's file directory for persistent data\cite{android_devdocs_data_storage, android_devdocs_internal_storage}, because applications are isolated from the rest of the system.
 
 As shown in Table~\ref{tab:homeserver_comparison}, Dendrite does support embedded databases, but on a different version.
 We approach this task by collaborating with the authors of the Dendrite project on merging the work which supports embedded databases with the work which supports peer-to-peer networking.
@@ -131,11 +126,7 @@ private static class PortActivatedCallback implements Callback {
 \end{lstfloat}
 
 Gomobile can be used to bind the underlying library, which has the interface as shown in Listing~\ref{lst:dendrite_init}.
-This command generates an \textbf{A}ndroid \textbf{Ar}chive \texttt{(.aar)} file\footnotemark, which includes the compiled Go code and Java bindings.
-\footnotetext{%
-	Android Archives and their use are described at\\
-	\url{https://developer.android.com/studio/projects/android-library}
-}
+This command generates an \textbf{A}ndroid \textbf{Ar}chive \texttt{(.aar)} file\cite{android_devdocs_aar}, which includes the compiled Go code and Java bindings.
 
 \section{Running Dendrite on Android}
 Finally, we prepare the Android side to connect with and run Dendrite.

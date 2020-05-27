@@ -1,27 +1,15 @@
 \documentclass[11pt,notitlepage]{report}
 \input{preamble/Base.tex}
+\input{AAU.tex}
 \frenchspacing
 \pagenumbering{roman}
-\title{%
-	Porting Peer-to-Peer Matrix to Android\\
-	\large{%
-		Using Open Source Software\\
-		to Increase Privacy
-	}
-}
-\author{Hilmar Gústafsson \texttt{<hgusta16@student.aau.dk>}}
-\date{\small\today} 			% TODO: Set the date when done writing
 \begin{document}
-\sloppy							% Avoids over- and underfull artifacts on the screen
-\maketitle
-\begin{abstract}
-	Privacy is becoming harder and harder to maintain as software becomes more intrusive.
-	The Matrix standard is an attempt to liberate our communication and privacy through open efforts.
-	We investigate the viability of porting Peer-to-Peer Matrix to Android, as a method of improving personal privacy.
-	We design and implement an Android application with an embedded Matrix homeserver, and determine that there is an increase of 34\% in app size.
-	There is likely to be a significant increase in accumulated message metadata, and \todo{battery impact}.
-\end{abstract}
+\sloppy
 \setcounter{tocdepth}{1}
+
+\input{variables.tex}
+\input{frontmatter.tex}
+
 \tableofcontents
 \pagenumbering{arabic}
 \input{preface.tex}

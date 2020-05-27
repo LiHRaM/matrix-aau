@@ -1,0 +1,83 @@
+\usepackage{xcolor}
+\definecolor{aaublue}{RGB}{33,26,82}% dark blue
+\usepackage{caption}
+\captionsetup{%
+	font=footnotesize,% set font size to footnotesize
+	labelfont=bf % bold label (e.g., Figure 3.2) font
+}
+\usepackage{array,booktabs}
+\usepackage{framed}
+
+\usepackage[contents={},color=gray]{background}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[framed,amsmath,thmmarks]{ntheorem}
+
+\usepackage{titlesec}
+\titleformat{\chapter}[display]{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titleformat*{\section}{\normalfont\Large\bfseries}
+\titleformat*{\subsection}{\normalfont\large\bfseries}
+\titleformat*{\subsubsection}{\normalfont\normalsize\bfseries}
+% \titleformat*{\paragraph}{\normalfont\normalsize\bfseries}
+% \titleformat*{\subparagraph}{\normalfont\normalsize\bfseries}
+
+
+% Change the headers and footers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{} %delete everything
+\renewcommand{\headrulewidth}{0pt} %remove the horizontal line in the header
+\fancyhead[L]{\small\nouppercase\rightmark}
+\fancyhead[R]{\thepage}
+\usepackage{calc}
+\usepackage[nottoc]{tocbibind}
+\usepackage{lastpage}
+
+\newcommand{\aautitlepage}[3]{%
+	{
+			%set up various length
+			\ifx\titlepageleftcolumnwidth\undefined\
+				\newlength{\titlepageleftcolumnwidth}
+				\newlength{\titlepagerightcolumnwidth}
+			\fi
+			\setlength{\titlepageleftcolumnwidth}{0.5\textwidth-\tabcolsep}
+			\setlength{\titlepagerightcolumnwidth}{\textwidth-2\tabcolsep-\titlepageleftcolumnwidth}
+			%create title page
+			\thispagestyle{empty}
+			\noindent%
+			\begin{tabular}{@{}ll@{}}
+				\parbox{\titlepageleftcolumnwidth}{
+					\includegraphics[width=\titlepageleftcolumnwidth]{aau/aau_logo_en}
+				}  &
+				\parbox{\titlepagerightcolumnwidth}{\raggedleft\sf\small
+					#2
+				}\bigskip \\
+				#1 &
+				\parbox[t]{\titlepagerightcolumnwidth}{%
+					\textbf{Abstract:}\bigskip\par
+					\fbox{\parbox{\titlepagerightcolumnwidth-2\fboxsep-2\fboxrule}{%
+							#3
+						}}
+				}         \\
+			\end{tabular}
+			\vfill
+			\noindent{\footnotesize\emph{The content of this report is freely available, but publication (with reference) may only be pursued due to agreement with the author.}}
+			\clearpage
+		}
+}
+
+%Create english project info
+\newcommand{\englishprojectinfo}[8]{%
+	\parbox[t]{\titlepageleftcolumnwidth}{
+		\textbf{Title:}\\ #1\bigskip\par
+		\textbf{Theme:}\\ #2\bigskip\par
+		\textbf{Project Period:}\\ #3\bigskip\par
+		\textbf{Project Group:}\\ #4\bigskip\par
+		\textbf{Participant(s):}\\ #5\bigskip\par
+		\textbf{Supervisor(s):}\\ #6\bigskip\par
+		\textbf{Copies:} #7\bigskip\par
+		\textbf{Page Numbers:}~\pageref{LastPage}\bigskip\par
+		\textbf{Date of Completion:}\\ #8
+	}
+}

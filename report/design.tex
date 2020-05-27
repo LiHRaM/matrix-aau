@@ -71,7 +71,7 @@ We estimate the work required for each homeserver to support the minimum require
 	      }
 	\item{
 	      \textbf{Android Packaging}:
-	      Riot and RiotX use the Gradle\footnote{https://gradle.org} build system, which transforms source program into an Android application.
+	      Riot and RiotX use the Gradle\cite{gradle} build system, which transforms source program into an Android application.
 	      We therefore need a method to integrate the homeserver in this build system in order to package it with the application.
 	      This also allows the clients to start and stop the servers as necessary.
 	      }
@@ -102,10 +102,8 @@ On the other hand, it does not support either peer-to-peer networking or Android
 If we were to choose Synapse, we would have to implement all the peer-to-peer logic which is already implemented in Dendrite.
 Additionally, as there are no Python implementations of libp2p, Synapse would have to use a different set of libraries.
 One could also choose to invest in libp2p for Python and implement those libraries as well, but that would require an even greater amount of work.
-In terms of Android packaging, there are no official solutions for Python, but there is an unofficial solution known as BeeWare\footnotemark.
-\footnotetext{https://beeware.org}
-Unfortunately, as its documentation states\footnotemark, the build tools are incompatible with the latest changes in the Android ecosystem.
-\footnotetext{https://docs.beeware.org/en/latest/tutorial/tutorial-5/index.html}
+In terms of Android packaging, there are no official solutions for Python, but there is an unofficial solution known as BeeWare\cite{beeware}.
+Unfortunately, as its documentation states\cite{beeware_docs}, the build tools are incompatible with the latest changes in the Android ecosystem.
 It would be a major effort to use Synapse as the embedded homeserver at this time.
 
 \subsubsection{Dendrite}
